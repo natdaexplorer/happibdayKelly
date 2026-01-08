@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #FFF6E5; /* light cream */
+  color: #333;
+}
+
+header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+button {
+  padding: 10px 14px;
+  font-size: 16px;
+}
+
+section {
+  display: none;
+  text-align: center;
+}
+
+section.active {
+  display: block;
+}
+
+.booth {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: auto;
+}
+
+video, canvas, #frameOverlay {
+  width: 100%;
+}
+
+#frameOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.controls {
+  margin-top: 10px;
+}
+
+.frameSelector {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.frameSelector img {
+  width: 60px;
+  cursor: pointer;
+}
