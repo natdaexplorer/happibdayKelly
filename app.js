@@ -69,26 +69,7 @@ document.getElementById("nextMessage").onclick = () => {
 };
 
 // 4. Frame Logic
-function loadFrame() {
-  frameOverlay.src = frames[frameIndex].src;
-  frameCounter.textContent = frameIndex + 1;
-  shotIndex = 0;
-  capturedImages = [];
-}
-
-document.getElementById("prevFrame").onclick = () => {
-  frameIndex = (frameIndex - 1 + frames.length) % frames.length;
-  loadFrame();
-};
-
-document.getElementById("nextFrame").onclick = () => {
-  frameIndex = (frameIndex + 1) % frames.length;
-  loadFrame();
-};
-
-document.getElementById("resetBtn").onclick = () => loadFrame();
-
-// 5. Capture Logic
+/* UPDATED CAPTURE (With Preview Retention) */
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return alert("Frame full!");
@@ -105,21 +86,48 @@ document.getElementById("captureBtn").onclick = () => {
       canvas.width = camera.videoWidth;
       canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
-      ctx.translate(canvas.width, 0); // Mirror fix
+      
+      ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
       
-      capturedImages.push(canvas.toDataURL("image/png"));
+      const photoData = canvas.toDataURL("image/png");
+      capturedImages.push(photoData);
+
+      // --- ADD PHOTO TO SCREEN PREVIEW ---
+      const slot = currentSlots[shotIndex];
+      const previewImg = document.createElement("img");
+      previewImg.src = photoData;
+      previewImg.className = "captured-slot-photo";
+      
+      // Use percentages from our coordinates to place it
+      previewImg.style.left = slot.x + "%";
+      previewImg.style.top = slot.y + "%";
+      previewImg.style.width = slot.w + "%";
+      previewImg.style.height = slot.h + "%";
+      
+      document.getElementById("photoPreviewContainer").appendChild(previewImg);
+
       shotIndex++;
       
-      // Flash Effect
-      camera.style.filter = "brightness(2)";
+      // Flash effect
+      camera.style.filter = "brightness(3)";
       setTimeout(() => camera.style.filter = "none", 100);
     } else {
       countdownEl.textContent = count;
     }
   }, 1000);
 };
+
+/* UPDATED LOAD FRAME (Clears Previews) */
+function loadFrame() {
+  frameOverlay.src = frames[frameIndex].src;
+  frameCounter.textContent = frameIndex + 1;
+  shotIndex = 0;
+  capturedImages = [];
+  // This clears the photos on screen when you switch templates
+  document.getElementById("photoPreviewContainer").innerHTML = ""; 
+}
 
 // 6. Download Logic
 document.getElementById("downloadBtn").onclick = () => {
