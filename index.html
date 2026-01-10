@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Birthday Photobooth</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -13,37 +13,40 @@
   <button id="btnPhoto">Take Photos</button>
 </header>
 
-<main>
+<!-- 🎉 MESSAGE MODE -->
+<section id="messageSection">
+  <img id="messageImage" src="assets/messages/birthdaymsg1.png"/>
+  <button id="nextMessage">Next</button>
+</section>
 
-  <!-- Birthday Message -->
-  <section id="messageSection" class="active">
-    <img id="messageImage" src="assets/messages/birthdaymsg1.png" />
-    <button id="nextMessage">Next</button>
-  </section>
+<!-- 📸 PHOTO MODE -->
+<section id="photoSection" class="hidden">
 
-  <!-- Photobooth -->
-  <section id="photoSection">
-    <div class="booth">
-      <video id="camera" autoplay playsinline></video>
-      <canvas id="canvas"></canvas>
-      <img id="frameOverlay" src="assets/frames/frame2.png" />
+  <div class="top-bar">
+    <button id="resetBtn">⟲</button>
+    <div id="frameCounter">1</div>
+    <div class="frame-nav">
+      <button id="prevFrame">◀</button>
+      <button id="nextFrame">▶</button>
     </div>
+  </div>
 
-    <div class="controls">
-      <button id="countdownBtn">3s Countdown</button>
-      <button id="resetBtn">Reset</button>
-      <button id="downloadBtn">Download</button>
-    </div>
+  <div class="booth">
+    <video id="camera" autoplay playsinline></video>
+    <img id="frameOverlay"/>
+    <div id="countdown"></div>
+  </div>
 
-    <div class="frameSelector">
-      <img src="assets/frames/frame1.png" data-frame="frame1.png">
-      <img src="assets/frames/frame2.png" data-frame="frame2.png">
-      <img src="assets/frames/frame3.png" data-frame="frame3.png">
-      <img src="assets/frames/frame4.png" data-frame="frame4.png">
-    </div>
-  </section>
+  <div class="bottom-bar">
+    <button id="captureBtn">
+      <img src="assets/ui/cameraicon.png"/>
+    </button>
+    <button id="downloadBtn">
+      <img src="assets/ui/saveimageicon.png"/>
+    </button>
+  </div>
 
-</main>
+</section>
 
 <script src="app.js"></script>
 </body>
