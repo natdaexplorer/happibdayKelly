@@ -1,66 +1,116 @@
-// Navigation
 const messageSection = document.getElementById("messageSection");
 const photoSection = document.getElementById("photoSection");
 
-document.getElementById("btnMessage").onclick = () => {
-  messageSection.classList.add("active");
-  photoSection.classList.remove("active");
-};
+const btnMessage = document.getElementById("btnMessage");
+const btnPhoto = document.getElementById("btnPhoto");
 
-document.getElementById("btnPhoto").onclick = () => {
-  photoSection.classList.add("active");
-  messageSection.classList.remove("active");
-};
+const messageImage = document.getElementById("messageImage");
+const nextMessage = document.getElementById("nextMessage");
 
-// Birthday messages
+const camera = document.getElementById("camera");
+const frameOverlay = document.getElementById("frameOverlay");
+const countdownEl = document.getElementById("countdown");
+
+const resetBtn = document.getElementById("resetBtn");
+const captureBtn = document.getElementById("captureBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+const prevFrame = document.getElementById("prevFrame");
+const nextFrame = document.getElementById("nextFrame");
+const frameCounter = document.getElementById("frameCounter");
+
 const messages = [
   "assets/messages/birthdaymsg1.png",
   "assets/messages/birthdaymsg2.png"
 ];
-let msgIndex = 0;
 
-document.getElementById("nextMessage").onclick = () => {
-  msgIndex = (msgIndex + 1) % messages.length;
-  document.getElementById("messageImage").src = messages[msgIndex];
+const frames = [
+  { src: "assets/frames/frame1.png", slots: 3 },
+  { src: "assets/frames/frame2.png", slots: 2 },
+  { src: "assets/frames/frame3.png", slots: 1 },
+  { src: "assets/frames/frame4.png", slots: 1 }
+];
+
+let messageIndex = 0;
+let frameIndex = 0;
+let shotIndex = 0;
+
+/* MODE SWITCH */
+btnMessage.onclick = () => {
+  messageSection.classList.remove("hidden");
+  photoSection.classList.add("hidden");
 };
 
-// Camera
-const video = document.getElementById("camera");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const frameOverlay = document.getElementById("frameOverlay");
-
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-  .then(stream => video.srcObject = stream);
-
-// Countdown photo
-document.getElementById("countdownBtn").onclick = () => {
-  setTimeout(takePhoto, 3000);
+btnPhoto.onclick = async () => {
+  messageSection.classList.add("hidden");
+  photoSection.classList.remove("hidden");
+  await navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => camera.srcObject = stream);
+  loadFrame();
 };
 
-function takePhoto() {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0);
-  ctx.drawImage(frameOverlay, 0, 0, canvas.width, canvas.height);
+/* MESSAGE SLIDER */
+nextMessage.onclick = () => {
+  messageIndex = (messageIndex + 1) % messages.length;
+  messageImage.src = messages[messageIndex];
+};
+
+/* FRAME NAV */
+function loadFrame() {
+  frameOverlay.src = frames[frameIndex].src;
+  frameCounter.textContent = frameIndex + 1;
+  shotIndex = 0;
 }
 
-// Reset
-document.getElementById("resetBtn").onclick = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+prevFrame.onclick = () => {
+  frameIndex = (frameIndex - 1 + frames.length) % frames.length;
+  loadFrame();
 };
 
-// Download
-document.getElementById("downloadBtn").onclick = () => {
-  const link = document.createElement("a");
-  link.download = "birthday_photo.png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+nextFrame.onclick = () => {
+  frameIndex = (frameIndex + 1) % frames.length;
+  loadFrame();
 };
 
-// Frame switching
-document.querySelectorAll(".frameSelector img").forEach(img => {
-  img.onclick = () => {
-    frameOverlay.src = "assets/frames/" + img.dataset.frame;
+/* RESET */
+resetBtn.onclick = () => {
+  shotIndex = 0;
+};
+
+/* CAPTURE */
+captureBtn.onclick = () => {
+  if (shotIndex >= frames[frameIndex].slots) return;
+
+  let count = 3;
+  countdownEl.textContent = count;
+
+  const timer = setInterval(() => {
+    count--;
+    if (count === 0) {
+      clearInterval(timer);
+      countdownEl.textContent = "";
+      shotIndex++;
+    } else {
+      countdownEl.textContent = count;
+    }
+  }, 1000);
+};
+
+/* DOWNLOAD */
+downloadBtn.onclick = () => {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = camera.videoWidth;
+  canvas.height = camera.videoHeight;
+
+  ctx.drawImage(camera, 0, 0);
+  const frameImg = new Image();
+  frameImg.src = frames[frameIndex].src;
+  frameImg.onload = () => {
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+    const a = document.createElement("a");
+    a.download = "photo.png";
+    a.href = canvas.toDataURL();
+    a.click();
   };
-});
+};
