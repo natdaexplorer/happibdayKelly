@@ -111,19 +111,44 @@ document.getElementById("downloadBtn").onclick = () => {
     canvas.width = frameImg.width;
     canvas.height = frameImg.height;
 
-    let loadedCount = 0;
+    let loadedImages = 0;
     capturedImages.forEach((data, i) => {
       const img = new Image();
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        ctx.drawImage(img, (s.x/100)*canvas.width, (s.y/100)*canvas.height, (s.w/100)*canvas.width, (s.h/100)*canvas.height);
-        loadedCount++;
-        if (loadedCount === capturedImages.length) {
+        
+        // --- SMART CROP CALCULATIONS ---
+        const slotX = (s.x / 100) * canvas.width;
+        const slotY = (s.y / 100) * canvas.height;
+        const slotW = (s.w / 100) * canvas.width;
+        const slotH = (s.h / 100) * canvas.height;
+
+        const imgRatio = img.width / img.height;
+        const slotRatio = slotW / slotH;
+
+        let sourceX = 0, sourceY = 0, sourceW = img.width, sourceH = img.height;
+
+        if (imgRatio > slotRatio) {
+          // Photo is too wide - crop the sides
+          sourceW = img.height * slotRatio;
+          sourceX = (img.width - sourceW) / 2;
+        } else {
+          // Photo is too tall - crop the top/bottom
+          sourceH = img.width / slotRatio;
+          sourceY = (img.height - sourceH) / 2;
+        }
+
+        // Draw the cropped photo into the slot
+        ctx.drawImage(img, sourceX, sourceY, sourceW, sourceH, slotX, slotY, slotW, slotH);
+        
+        loadedImages++;
+        if (loadedImages === capturedImages.length) {
+          // Draw frame last
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const link = document.createElement("a");
-          link.download = "birthday-photo.png";
-          link.href = canvas.toDataURL();
+          link.download = `birthday-booth-${Date.now()}.png`;
+          link.href = canvas.toDataURL("image/png");
           link.click();
         }
       };
