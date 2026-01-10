@@ -1,39 +1,70 @@
-const messageSection = document.getElementById("messageSection");
-const photoSection = document.getElementById("photoSection");
-
-const btnMessage = document.getElementById("btnMessage");
-const btnPhoto = document.getElementById("btnPhoto");
-
-const messageImage = document.getElementById("messageImage");
-const nextMessage = document.getElementById("nextMessage");
-
-const camera = document.getElementById("camera");
-const frameOverlay = document.getElementById("frameOverlay");
-const countdownEl = document.getElementById("countdown");
-
-const resetBtn = document.getElementById("resetBtn");
-const captureBtn = document.getElementById("captureBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
-const prevFrame = document.getElementById("prevFrame");
-const nextFrame = document.getElementById("nextFrame");
-const frameCounter = document.getElementById("frameCounter");
-
-const messages = [
-  "assets/messages/birthdaymsg1.png",
-  "assets/messages/birthdaymsg2.png"
-];
-
 const frames = [
-  { src: "assets/frames/frame1.png", slots: 3 },
-  { src: "assets/frames/frame2.png", slots: 2 },
-  { src: "assets/frames/frame3.png", slots: 1 },
-  { src: "assets/frames/frame4.png", slots: 1 }
+  { 
+    src: "assets/frames/frame1.png", 
+    slots: [
+      { x: 10, y: 2, w: 80, h: 30 }, // Top Slot
+      { x: 10, y: 34, w: 80, h: 30 }, // Middle Slot
+      { x: 10, y: 66, w: 80, h: 30 }  // Bottom Slot
+    ] 
+  },
+  { 
+    src: "assets/frames/frame2.png", 
+    slots: [
+      { x: 14, y: 10, w: 72, h: 38 }, // Top Slot
+      { x: 14, y: 51, w: 72, h: 38 }  // Bottom Slot
+    ] 
+  },
+  { 
+    src: "assets/frames/frame3.png", 
+    slots: [
+      { x: 5, y: 38, w: 56, h: 50 }   // Canon Screen
+    ] 
+  },
+  { 
+    src: "assets/frames/frame4.png", 
+    slots: [
+      { x: 22, y: 21, w: 57, h: 51 }  // Polaroid Center
+    ] 
+  }
 ];
 
-let messageIndex = 0;
-let frameIndex = 0;
-let shotIndex = 0;
+// We need an array to store the "taken" photos
+let capturedImages = []; 
+
+/* UPDATED CAPTURE LOGIC */
+captureBtn.onclick = () => {
+  const currentFrame = frames[frameIndex];
+  if (shotIndex >= currentFrame.slots.length) {
+    alert("Frame is full! Reset to take more.");
+    return;
+  }
+
+  let count = 3;
+  countdownEl.textContent = count;
+
+  const timer = setInterval(() => {
+    count--;
+    if (count === 0) {
+      clearInterval(timer);
+      countdownEl.textContent = "";
+      
+      // Capture the current frame from video
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = camera.videoWidth;
+      tempCanvas.height = camera.videoHeight;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.drawImage(camera, 0, 0);
+      
+      // Store the image data
+      capturedImages.push(tempCanvas.toDataURL("image/png"));
+      
+      shotIndex++;
+      // Optional: Add a visual "flash" effect here
+    } else {
+      countdownEl.textContent = count;
+    }
+  }, 1000);
+};
 
 /* MODE SWITCH */
 btnMessage.onclick = () => {
@@ -100,17 +131,39 @@ captureBtn.onclick = () => {
 downloadBtn.onclick = () => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  canvas.width = camera.videoWidth;
-  canvas.height = camera.videoHeight;
-
-  ctx.drawImage(camera, 0, 0);
+  
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
+
   frameImg.onload = () => {
+    // Set canvas to the size of the template
+    canvas.width = frameImg.width;
+    canvas.height = frameImg.height;
+
+    const currentTemplate = frames[frameIndex];
+
+    // 1. Draw the captured photos into their slots FIRST (Background)
+    capturedImages.forEach((imgData, index) => {
+      const slot = currentTemplate.slots[index];
+      const photo = new Image();
+      photo.src = imgData;
+      
+      // Convert percentage to actual pixels
+      const destX = (slot.x / 100) * canvas.width;
+      const destY = (slot.y / 100) * canvas.height;
+      const destW = (slot.w / 100) * canvas.width;
+      const destH = (slot.h / 100) * canvas.height;
+
+      ctx.drawImage(photo, destX, destY, destW, destH);
+    });
+
+    // 2. Draw the frame OVER the photos (Foreground)
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+
+    // 3. Trigger Download
     const a = document.createElement("a");
-    a.download = "photo.png";
-    a.href = canvas.toDataURL();
+    a.download = `photobooth-${Date.now()}.png`;
+    a.href = canvas.toDataURL("image/png");
     a.click();
   };
 };
