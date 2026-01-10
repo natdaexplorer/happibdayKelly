@@ -23,27 +23,29 @@
 
 <section id="photoSection" class="hidden">
   <div class="top-bar">
-    <button id="resetBtn">⟲</button>
+    <button id="resetBtn" class="pixel-arrow-small">⟲</button>
     <div id="frameCounter">1</div>
     <div class="frame-nav">
-      <button id="prevFrame">◀</button>
-      <button id="nextFrame">▶</button>
+      <button id="prevFrame" class="pixel-arrow">◀</button>
+      <button id="nextFrame" class="pixel-arrow">▶</button>
     </div>
     <button class="back-home-btn">✖</button>
   </div>
 
-  <div class="booth">
-    <video id="camera" autoplay playsinline></video>
-    <img id="frameOverlay" src="assets/frames/frame1.png"/>
-    <div id="countdown"></div>
-  </div>
+  <div class="booth-layout-wrapper">
+    <div class="booth">
+      <video id="camera" autoplay playsinline></video>
+      <img id="frameOverlay" src="assets/frames/frame1.png"/>
+      <div id="countdown"></div>
+    </div>
 
-  <div class="bottom-bar">
-    <img id="captureBtn" src="assets/ui/cameraicon.png" class="icon-btn" alt="Capture"/>
-    <img id="downloadBtn" src="assets/ui/saveimageicon.png" class="icon-btn" alt="Save"/>
+    <div class="side-controls">
+      <img id="captureBtn" src="assets/ui/cameraicon.png" class="icon-btn" alt="Capture"/>
+      <img id="downloadBtn" src="assets/ui/saveimageicon.png" class="icon-btn" alt="Save"/>
+    </div>
   </div>
 </section>
-
+  
 <script src="app.js"></script>
 </body>
 </html>
