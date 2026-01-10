@@ -8,20 +8,20 @@
 </head>
 <body>
 
-<header>
-  <button id="btnMessage">Birthday Message</button>
-  <button id="btnPhoto">Take Photos</button>
-</header>
+<div id="landingPage" class="screen-center">
+  <button id="btnMessage" class="main-nav-btn">Birthday Message</button>
+  <button id="btnStartBooth" class="main-nav-btn">Take Photos</button>
+</div>
 
-<!-- 🎉 MESSAGE MODE -->
-<section id="messageSection">
-  <img id="messageImage" src="assets/messages/birthdaymsg1.png"/>
-  <button id="nextMessage">Next</button>
+<section id="messageSection" class="hidden">
+  <div class="message-container">
+    <img id="messageImage" src="assets/messages/birthdaymsg1.png"/>
+    <button id="nextMessage" class="arrow-btn">▶</button>
+    <button class="back-home-btn">✖</button>
+  </div>
 </section>
 
-<!-- 📸 PHOTO MODE -->
 <section id="photoSection" class="hidden">
-
   <div class="top-bar">
     <button id="resetBtn">⟲</button>
     <div id="frameCounter">1</div>
@@ -29,23 +29,19 @@
       <button id="prevFrame">◀</button>
       <button id="nextFrame">▶</button>
     </div>
+    <button class="back-home-btn">✖</button>
   </div>
 
   <div class="booth">
     <video id="camera" autoplay playsinline></video>
-    <img id="frameOverlay"/>
+    <img id="frameOverlay" src="assets/frames/frame1.png"/>
     <div id="countdown"></div>
   </div>
 
   <div class="bottom-bar">
-    <button id="captureBtn">
-      <img src="assets/ui/cameraicon.png"/>
-    </button>
-    <button id="downloadBtn">
-      <img src="assets/ui/saveimageicon.png"/>
-    </button>
+    <img id="captureBtn" src="assets/ui/cameraicon.png" class="icon-btn" alt="Capture"/>
+    <img id="downloadBtn" src="assets/ui/saveimageicon.png" class="icon-btn" alt="Save"/>
   </div>
-
 </section>
 
 <script src="app.js"></script>
