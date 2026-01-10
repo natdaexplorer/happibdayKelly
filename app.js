@@ -16,17 +16,10 @@ const frames = [
   { src: "assets/frames/frame4.png", slots: [{x:21.5,y:20,w:57.5,h:52}] }
 ];
 
-let messageIndex = 0;
-let frameIndex = 0;
-let shotIndex = 0;
-let capturedImages = [];
+let messageIndex = 0, frameIndex = 0, shotIndex = 0, capturedImages = [];
 
 // Navigation
-document.getElementById("btnMessage").onclick = () => {
-  landingPage.classList.add("hidden");
-  messageSection.classList.remove("hidden");
-};
-
+document.getElementById("btnMessage").onclick = () => { landingPage.classList.add("hidden"); messageSection.classList.remove("hidden"); };
 document.getElementById("btnStartBooth").onclick = async () => {
   landingPage.classList.add("hidden");
   photoSection.classList.remove("hidden");
@@ -34,11 +27,7 @@ document.getElementById("btnStartBooth").onclick = async () => {
   camera.srcObject = stream;
   loadFrame();
 };
-
-document.querySelectorAll(".back-home-btn").forEach(btn => {
-  btn.onclick = () => location.reload();
-});
-
+document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
 document.getElementById("nextMessage").onclick = () => {
   messageIndex = (messageIndex + 1) % messages.length;
   document.getElementById("messageImage").src = messages[messageIndex];
@@ -52,16 +41,8 @@ function loadFrame() {
   photoPreviewContainer.innerHTML = ""; 
 }
 
-document.getElementById("prevFrame").onclick = () => {
-  frameIndex = (frameIndex - 1 + frames.length) % frames.length;
-  loadFrame();
-};
-
-document.getElementById("nextFrame").onclick = () => {
-  frameIndex = (frameIndex + 1) % frames.length;
-  loadFrame();
-};
-
+document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
+document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
 // Capture Logic
@@ -76,39 +57,29 @@ document.getElementById("captureBtn").onclick = () => {
     if (count === 0) {
       clearInterval(timer);
       countdownEl.textContent = "";
-      
       const canvas = document.createElement("canvas");
-      canvas.width = camera.videoWidth;
-      canvas.height = camera.videoHeight;
+      canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
+      ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
-      
       const photoData = canvas.toDataURL("image/png");
       capturedImages.push(photoData);
 
-      // Add to Preview
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
-      img.src = photoData;
-      img.className = "captured-slot-photo";
-      img.style.left = slot.x + "%";
-      img.style.top = slot.y + "%";
-      img.style.width = slot.w + "%";
-      img.style.height = slot.h + "%";
+      img.src = photoData; img.className = "captured-slot-photo";
+      img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
+      img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
       photoPreviewContainer.appendChild(img);
-
       shotIndex++;
+
       camera.style.filter = "brightness(3)";
       setTimeout(() => camera.style.filter = "none", 100);
-    } else {
-      countdownEl.textContent = count;
-    }
+    } else { countdownEl.textContent = count; }
   }, 1000);
 };
 
-// Download Logic
+// Download Logic with Smart Crop
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return alert("Take photos first!");
   const canvas = document.createElement("canvas");
@@ -117,40 +88,25 @@ document.getElementById("downloadBtn").onclick = () => {
   frameImg.src = frames[frameIndex].src;
 
   frameImg.onload = () => {
-    canvas.width = frameImg.width;
-    canvas.height = frameImg.height;
-
+    canvas.width = frameImg.width; canvas.height = frameImg.height;
     let loadedCount = 0;
     capturedImages.forEach((data, i) => {
       const img = new Image();
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        const sw = (s.w / 100) * canvas.width;
-        const sh = (s.h / 100) * canvas.height;
-        const sx = (s.x / 100) * canvas.width;
-        const sy = (s.y / 100) * canvas.height;
-
-        // Cover logic for download
-        const imgRatio = img.width / img.height;
-        const slotRatio = sw / sh;
+        const sw = (s.w/100)*canvas.width, sh = (s.h/100)*canvas.height;
+        const sx = (s.x/100)*canvas.width, sy = (s.y/100)*canvas.height;
+        const imgRatio = img.width / img.height, slotRatio = sw / sh;
         let cx, cy, cw, ch;
-        if (imgRatio > slotRatio) {
-          cw = img.height * slotRatio; ch = img.height;
-          cx = (img.width - cw) / 2; cy = 0;
-        } else {
-          cw = img.width; ch = img.width / slotRatio;
-          cx = 0; cy = (img.height - ch) / 2;
-        }
-
+        if (imgRatio > slotRatio) { cw = img.height * slotRatio; ch = img.height; cx = (img.width - cw) / 2; cy = 0; }
+        else { cw = img.width; ch = img.width / slotRatio; cx = 0; cy = (img.height - ch) / 2; }
         ctx.drawImage(img, cx, cy, cw, ch, sx, sy, sw, sh);
         loadedCount++;
         if (loadedCount === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "photo.png";
-          a.href = canvas.toDataURL();
-          a.click();
+          a.download = "photobooth.png"; a.href = canvas.toDataURL(); a.click();
         }
       };
     });
