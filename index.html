@@ -16,8 +16,8 @@
 <section id="messageSection" class="hidden">
   <div class="message-container">
     <img id="messageImage" src="assets/messages/birthdaymsg1.png"/>
-    <button id="nextMessage" class="arrow-btn">▶</button>
-    <button class="back-home-btn">✖</button>
+    <button id="nextMessage" class="pixel-arrow-small">▶</button>
+    <button class="back-home-btn">X</button>
   </div>
 </section>
 
@@ -29,27 +29,24 @@
       <button id="prevFrame" class="pixel-arrow">◀</button>
       <button id="nextFrame" class="pixel-arrow">▶</button>
     </div>
-    <button class="back-home-btn">✖</button>
+    <button class="back-home-btn">X</button>
   </div>
 
   <div class="booth-layout-wrapper">
-   <div class="booth">
-  <video id="camera" autoplay playsinline></video>
-  
-  <div id="photoPreviewContainer"></div>
-  
-  <img id="frameOverlay" src="assets/frames/frame1.png"/>
-  
-  <div id="countdown"></div>
-</div>
-
     <div class="side-controls">
       <img id="captureBtn" src="assets/ui/cameraicon.png" class="icon-btn" alt="Capture"/>
       <img id="downloadBtn" src="assets/ui/saveimageicon.png" class="icon-btn" alt="Save"/>
     </div>
+
+    <div class="booth">
+      <video id="camera" autoplay playsinline></video>
+      <div id="photoPreviewContainer"></div>
+      <img id="frameOverlay" src="assets/frames/frame1.png"/>
+      <div id="countdown"></div>
+    </div>
   </div>
 </section>
-  
+
 <script src="app.js"></script>
 </body>
 </html>
