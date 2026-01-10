@@ -11,10 +11,33 @@ const frameCounter = document.getElementById("frameCounter");
 const messages = ["assets/messages/birthdaymsg1.png", "assets/messages/birthdaymsg2.png"];
 
 const frames = [
-  { src: "assets/frames/frame1.png", slots: [{x:10,y:2,w:80,h:30},{x:10,y:34,w:80,h:30},{x:10,y:66,w:80,h:30}] },
-  { src: "assets/frames/frame2.png", slots: [{x:14,y:10,w:72,h:38},{x:14,y:51,w:72,h:38}] },
-  { src: "assets/frames/frame3.png", slots: [{x:5,y:38,w:56,h:50}] },
-  { src: "assets/frames/frame4.png", slots: [{x:22,y:21,w:57,h:51}] }
+  { 
+    src: "assets/frames/frame1.png", 
+    slots: [
+      { x: 10.5, y: 3.5, w: 79, h: 29 }, 
+      { x: 10.5, y: 34.8, w: 79, h: 29 }, 
+      { x: 10.5, y: 66.2, w: 79, h: 29 }
+    ] 
+  },
+  { 
+    src: "assets/frames/frame2.png", 
+    slots: [
+      { x: 13, y: 8, w: 74, h: 39 }, 
+      { x: 13, y: 51, w: 74, h: 39 }
+    ] 
+  },
+  { 
+    src: "assets/frames/frame3.png", 
+    slots: [
+      { x: 6, y: 39.5, w: 54, h: 48 } // Precision fix for Canon screen
+    ] 
+  },
+  { 
+    src: "assets/frames/frame4.png", 
+    slots: [
+      { x: 21.5, y: 20, w: 57.5, h: 52 } // Precision fix for Polaroid
+    ] 
+  }
 ];
 
 let messageIndex = 0;
