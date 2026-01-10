@@ -50,17 +50,18 @@ body {
   color: #333;
 }
 
+/* --- SIMPLE BLACK X --- */
 .back-home-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #333;
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  top: 15px;
+  right: 15px;
+  background: transparent !important;
+  border: none !important;
+  color: #000 !important;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: none !important;
 }
 
 /* Photobooth View */
@@ -87,11 +88,11 @@ video { width: 100%; border-radius: 12px; transform: scaleX(-1); }
   pointer-events: none;
 }
 
-/* --- PIXEL BUTTON STYLE --- */
+/* --- PIXEL BUTTON STYLE (Half Size) --- */
 .pixel-arrow, .pixel-arrow-small {
   background: #ffffff;
-  border: 4px solid #000;
-  box-shadow: 4px 4px 0px #000;
+  border: 2px solid #000; /* Thinner border for smaller buttons */
+  box-shadow: 2px 2px 0px #000; /* Smaller blocky shadow */
   cursor: pointer;
   font-family: monospace;
   font-weight: bold;
@@ -101,12 +102,19 @@ video { width: 100%; border-radius: 12px; transform: scaleX(-1); }
   transition: all 0.1s;
 }
 
-.pixel-arrow { padding: 10px 20px; font-size: 24px; }
-.pixel-arrow-small { padding: 5px 15px; font-size: 18px; }
+.pixel-arrow { 
+  padding: 4px 8px; 
+  font-size: 14px; 
+}
+
+.pixel-arrow-small { 
+  padding: 3px 6px; 
+  font-size: 11px; 
+}
 
 .pixel-arrow:active, .pixel-arrow-small:active {
   box-shadow: 0px 0px 0px #000;
-  transform: translate(4px, 4px);
+  transform: translate(2px, 2px);
 }
 
 /* --- DESKTOP POSITIONING --- */
