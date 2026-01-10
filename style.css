@@ -3,12 +3,12 @@ body {
   font-family: system-ui, sans-serif;
   background: #f9f3e8;
   text-align: center;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .hidden { display: none !important; }
 
-/* Landing Page Center */
+/* Landing Page */
 .screen-center {
   display: flex;
   flex-direction: column;
@@ -19,151 +19,97 @@ body {
 }
 
 .main-nav-btn {
-  padding: 15px 40px;
-  font-size: 1.2rem;
+  padding: 10px 25px;
+  font-size: 1rem;
+  border: 2px solid #000;
+  background: #fff;
   cursor: pointer;
-  border-radius: 50px;
-  border: 2px solid #333;
-  background: white;
-  transition: transform 0.2s;
+  border-radius: 4px;
 }
 
-.main-nav-btn:hover { transform: scale(1.05); }
-
-/* Message View */
-.message-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+/* --- PIXEL BUTTONS (Half Size) --- */
+.pixel-arrow, .pixel-arrow-small {
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0px #000;
+  cursor: pointer;
+  font-family: monospace;
+  display: inline-flex;
   align-items: center;
-  height: 100vh;
-  position: relative;
+  justify-content: center;
 }
 
-#messageImage { width: 85%; max-width: 400px; border-radius: 15px; }
+.pixel-arrow { padding: 4px 10px; font-size: 14px; }
+.pixel-arrow-small { padding: 2px 6px; font-size: 11px; }
 
-.arrow-btn {
-  background: none;
-  border: none;
-  font-size: 4rem;
-  cursor: pointer;
-  color: #333;
-}
+.pixel-arrow:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #000; }
 
-/* --- SIMPLE BLACK X --- */
+/* Back Home X */
 .back-home-btn {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: transparent !important;
-  border: none !important;
-  color: #000 !important;
-  font-size: 22px;
+  background: none;
+  border: none;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: none !important;
-}
-
-/* Photobooth View */
-.top-bar {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 15px;
 }
 
 /* --- BOOTH LAYOUT --- */
+.booth-layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.side-controls {
+  display: flex;
+  gap: 20px;
+}
+
+.icon-btn { width: 45px; cursor: pointer; }
+
 .booth {
   position: relative;
   width: 90vw;
-  max-width: 420px;
+  max-width: 350px;
   margin: auto;
+  background: #000;
+  line-height: 0;
 }
 
-video { width: 100%; border-radius: 12px; transform: scaleX(-1); }
+video { width: 100%; transform: scaleX(-1); }
 
 #frameOverlay {
   position: absolute;
-  top: 0; left: 0; width: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 10;
   pointer-events: none;
 }
 
-/* --- PIXEL BUTTON STYLE (Half Size) --- */
-.pixel-arrow, .pixel-arrow-small {
-  background: #ffffff;
-  border: 2px solid #000; /* Thinner border for smaller buttons */
-  box-shadow: 2px 2px 0px #000; /* Smaller blocky shadow */
-  cursor: pointer;
-  font-family: monospace;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.1s;
-}
-
-.pixel-arrow { 
-  padding: 4px 8px; 
-  font-size: 14px; 
-}
-
-.pixel-arrow-small { 
-  padding: 3px 6px; 
-  font-size: 11px; 
-}
-
-.pixel-arrow:active, .pixel-arrow-small:active {
-  box-shadow: 0px 0px 0px #000;
-  transform: translate(2px, 2px);
-}
-
-/* --- DESKTOP POSITIONING --- */
-.booth {
-  position: relative;
-  width: 85vw;
-  max-width: 380px;
-  margin: 0 auto;
-  line-height: 0; /* Prevents tiny gaps at the bottom of images */
-}
-
-video {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  transform: scaleX(-1); /* Mirror view */
-}
-
-/* --- THE PREVIEW SYSTEM --- */
 #photoPreviewContainer {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  pointer-events: none; /* Allows clicking through to the video */
-  z-index: 2;
+  z-index: 5;
 }
 
 .captured-slot-photo {
   position: absolute;
-  object-fit: cover; /* This stops the stretching! */
-  z-index: 2;
-}
-
-#frameOverlay {
-  position: absolute;
-  top: 0; left: 0;
+  object-fit: cover; /* IMPORTANT: Fills the hole without stretching */
   width: 100%; height: 100%;
-  z-index: 3; /* Always on top of photos and video */
-  pointer-events: none;
 }
 
 #countdown {
   position: absolute;
-  top: 10%; /* Moved to top */
+  top: 10px;
   left: 0; width: 100%;
-  text-align: center;
-  font-size: 60px;
-  font-weight: bold;
+  font-size: 50px;
   color: white;
-  text-shadow: 3px 3px 0px #000;
-  z-index: 10;
+  z-index: 100;
+  text-shadow: 2px 2px 0px #000;
 }
