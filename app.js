@@ -4,7 +4,7 @@ const countdownEl = document.getElementById("countdown");
 const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// 1. DATA: Frame Coordinates (Finalized)
+// 1. DATA: Frame Coordinates
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -23,9 +23,7 @@ const frames = [
   },
   { 
     src: "assets/frames/frame3.png", 
-    slots: [
-      { x: 8.5, y: 34.0, w: 46.2, h: 30.0 }
-    ] 
+    slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] 
   },
   { 
     src: "assets/frames/frame4.png", 
@@ -37,9 +35,9 @@ const frames = [
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
-let msgIndex = 1, totalMessages = 3; // Update totalMessages as needed
+let msgIndex = 1, totalMessages = 3; // Adjust based on your files
 
-// 2. LANDING PAGE NAVIGATION
+// 2. NAVIGATION
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -91,7 +89,6 @@ document.getElementById("resetBtn").onclick = () => loadFrame();
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-
   let count = 3;
   countdownEl.textContent = count;
   const timer = setInterval(() => {
@@ -113,14 +110,13 @@ document.getElementById("captureBtn").onclick = () => {
       img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
       img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
       photoPreviewContainer.appendChild(img);
-
       shotIndex++;
       updateCameraPosition();
     } else { countdownEl.textContent = count; }
   }, 1000);
 };
 
-// 5. DOWNLOAD LOGIC
+// 5. DOWNLOAD
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
