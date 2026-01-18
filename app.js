@@ -34,9 +34,8 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 let msgIndex = 1;
-const totalMessages = 2; // Fixed: Cycles between birthdaymsg1 and birthdaymsg2
+const totalMessages = 2; 
 
-// Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -82,55 +81,43 @@ document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex 
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// Capture with Feedback
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-
   let count = 3;
   countdownEl.textContent = count;
-  
   const timer = setInterval(() => {
     count--;
     if (count === 0) {
       clearInterval(timer);
       countdownEl.textContent = "";
-      
       camera.classList.add("flash-effect");
       setTimeout(() => camera.classList.remove("flash-effect"), 200);
-
       const canvas = document.createElement("canvas");
       canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
       ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
-      
       const photoData = canvas.toDataURL("image/png");
       capturedImages.push(photoData);
-
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
       img.src = photoData; img.className = "captured-slot-photo";
       img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
       img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
-      
       photoPreviewContainer.appendChild(img);
       shotIndex++;
       updateCameraPosition();
-    } else {
-      countdownEl.textContent = count;
-    }
+    } else { countdownEl.textContent = count; }
   }, 1000);
 };
 
-// Download
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
-  
   frameImg.onload = () => {
     canvas.width = frameImg.width; canvas.height = frameImg.height;
     let loaded = 0;
@@ -146,7 +133,7 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "photobooth.png"; a.href = canvas.toDataURL(); a.click();
+          a.download = "cottagecore_booth.png"; a.href = canvas.toDataURL(); a.click();
         }
       };
     });
