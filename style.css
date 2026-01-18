@@ -21,9 +21,17 @@ body {
 #musicSymbol { font-size: 42px; color: #8DAA91; line-height: 1; user-select: none; }
 
 #musicToggle .slash {
-  position: absolute; width: 3px; height: 100%;
-  background-color: #ff6b6b; transform: rotate(45deg);
-  display: none; pointer-events: none;
+  position: absolute; 
+  width: 3px; 
+  height: 100%;
+  background-color: #ff6b6b; 
+  transform: rotate(45deg);
+  display: none; /* Hidden by default */
+}
+
+/* This is what shows the slash when muted */
+#musicToggle.muted .slash {
+  display: block;
 }
 
 /* Logic to show slash when muted class is active */
