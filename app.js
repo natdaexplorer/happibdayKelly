@@ -1,19 +1,15 @@
-// Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
-const countdownEl = document.getElementById("countdown");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
 // --- MUSIC LOGIC ---
-// Ensure this path is correct: assets/music/song.mp3
 const audio = new Audio("assets/music/song.mp3");
 audio.loop = true;
-
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    audio.play().catch(err => console.log("Playback failed:", err));
+    audio.play();
     musicToggle.classList.remove("muted");
   } else {
     audio.pause();
@@ -21,7 +17,7 @@ musicToggle.onclick = () => {
   }
 };
 
-// --- FRAME CONFIG ---
+// --- FRAMES ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -30,9 +26,8 @@ const frames = [
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
-let msgIndex = 1;
 
-// --- NAVIGATION (No Refresh to keep music playing) ---
+// --- NAVIGATION (No Refresh) ---
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -54,11 +49,6 @@ document.querySelectorAll(".back-home-btn").forEach(btn => {
     if (camera.srcObject) { camera.srcObject.getTracks().forEach(t => t.stop()); }
   };
 });
-
-document.getElementById("nextMessage").onclick = () => {
-  msgIndex = (msgIndex % 2) + 1;
-  document.getElementById("messageImage").src = `assets/messages/birthdaymsg${msgIndex}.png`;
-};
 
 // --- BOOTH LOGIC ---
 function updateCameraPosition() {
@@ -84,11 +74,11 @@ document.getElementById("resetBtn").onclick = () => loadFrame();
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-  let count = 3; countdownEl.textContent = count;
+  let count = 3;
   const timer = setInterval(() => {
     count--;
     if (count === 0) {
-      clearInterval(timer); countdownEl.textContent = "";
+      clearInterval(timer);
       const canvas = document.createElement("canvas");
       canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
@@ -104,11 +94,11 @@ document.getElementById("captureBtn").onclick = () => {
       img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
       photoPreviewContainer.appendChild(img);
       shotIndex++; updateCameraPosition();
-    } else { countdownEl.textContent = count; }
+    }
   }, 1000);
 };
 
-// --- DOWNLOAD ---
+// --- DOWNLOAD (No Stretch Fix Included) ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
