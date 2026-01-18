@@ -24,7 +24,7 @@
 <section id="photoSection" class="hidden">
   <div class="top-bar">
     <button id="resetBtn" class="pixel-arrow-small">⟲</button>
-    <div id="frameCounter">1</div>
+    <div id="frameCounter" style="font-weight:bold; border:2px solid #000; padding:2px 10px; border-radius:20px;">1</div>
     <div class="frame-nav">
       <button id="prevFrame" class="pixel-arrow">◀</button>
       <button id="nextFrame" class="pixel-arrow">▶</button>
@@ -42,7 +42,7 @@
       <img id="frameOverlay" src="assets/frames/frame1.png"/>
       <video id="camera" autoplay playsinline></video>
       <div id="photoPreviewContainer"></div>
-      <div id="countdown"></div>
+      <div id="countdown" style="position: absolute; top: 15px; width: 100%; font-size: 50px; color: white; z-index: 100; text-shadow: 2px 2px 0px #000;"></div>
     </div>
   </div>
 </section>
