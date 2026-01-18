@@ -224,3 +224,24 @@ document.getElementById("downloadBtn").onclick = () => {
     });
   };
 };
+
+// DEBUG CONTROLLER: Move the photo/camera with your keyboard arrows!
+window.addEventListener('keydown', (e) => {
+    const currentSlots = frames[frameIndex].slots;
+    const slot = currentSlots[shotIndex] || currentSlots[0];
+    
+    const step = 0.5; // How much it moves per click (%)
+
+    if (e.key === "ArrowUp")    slot.y -= step;
+    if (e.key === "ArrowDown")  slot.y += step;
+    if (e.key === "ArrowLeft")  slot.x -= step;
+    if (e.key === "ArrowRight") slot.x += step;
+    if (e.key === "w")          slot.w += step;
+    if (e.key === "s")          slot.w -= step;
+
+    // This updates the camera position live on screen
+    updateCameraPosition();
+    
+    // Check your Browser Console (F12 -> Console) for these numbers!
+    console.log(`Current Slot: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
+});
