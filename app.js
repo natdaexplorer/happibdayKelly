@@ -2,31 +2,29 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- MUSIC LOGIC WITH AUTOMATIC PATH-SWITCHER ---
+// --- MUSIC LOGIC ---
 const audio = new Audio();
 audio.loop = true;
 
-// Define your paths here
-const path1 = "assets/assets/music/song.mp3";
-const path2 = "assets/music/song.mp3";
-
-audio.src = path1; // Try the double folder first
+// This matches your NEW folder path from the screenshot
+audio.src = "assets/assets/music/song.mp3"; 
 
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
+    // 1. Try the main path
     audio.play().then(() => {
       musicToggle.classList.remove("muted");
-    }).catch(() => {
-      // If path1 fails, switch to path2 and try again
-      console.warn("Path 1 failed, trying Path 2...");
-      audio.src = path2;
+    }).catch(err => {
+      console.warn("Path 1 failed, trying backup path...");
+      // 2. Backup path in case Vercel shortens the folder names
+      audio.src = "assets/music/song.mp3";
       audio.play().then(() => {
         musicToggle.classList.remove("muted");
-      }).catch(err => {
-        console.error("All music paths failed:", err);
-        alert("The browser couldn't find your song.mp3 in either folder.");
+      }).catch(err2 => {
+        console.error("All music paths failed:", err2);
+        alert("Music file not found! Please ensure song.mp3 is in assets/assets/music/");
       });
     });
   } else {
@@ -37,10 +35,10 @@ musicToggle.onclick = () => {
 
 // --- BOOTH NAVIGATION ---
 const frames = [
-  { src: "assets/assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
-  { src: "assets/assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
-  { src: "assets/assets/frames/frame3.png", slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] },
-  { src: "assets/assets/frames/frame4.png", slots: [{ x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }] }
+  { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
+  { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
+  { src: "assets/frames/frame3.png", slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] },
+  { src: "assets/frames/frame4.png", slots: [{ x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }] }
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
@@ -48,10 +46,8 @@ let frameIndex = 0, shotIndex = 0, capturedImages = [];
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    camera.srcObject = stream;
-  } catch (err) { alert("Camera access denied."); }
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  camera.srcObject = stream;
   loadFrame();
 };
 
@@ -92,7 +88,6 @@ document.getElementById("resetBtn").onclick = () => loadFrame();
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-  
   const canvas = document.createElement("canvas");
   canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
   const ctx = canvas.getContext("2d");
@@ -124,14 +119,12 @@ document.getElementById("downloadBtn").onclick = () => {
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        const targetW = (s.w / 100) * canvas.width, targetH = (s.h / 100) * canvas.height;
-        const targetX = (s.x / 100) * canvas.width, targetY = (s.y / 100) * canvas.height;
-        ctx.drawImage(img, 0, 0, img.width, img.height, targetX, targetY, targetW, targetH);
+        ctx.drawImage(img, 0, 0, img.width, img.height, (s.x/100)*canvas.width, (s.y/100)*canvas.height, (s.w/100)*canvas.width, (s.h/100)*canvas.height);
         loaded++;
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "HappyBirthdayBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
+          a.download = "PhotoBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
