@@ -1,26 +1,77 @@
-/* Update these specific parts in your style.css */
+body {
+  margin: 0; padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+  background: #f9f3e8;
+  text-align: center;
+}
+
+.hidden { display: none !important; }
+
+.screen-center {
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  height: 100vh; gap: 20px;
+}
+
+.main-nav-btn {
+  padding: 12px 30px; border: 2px solid #000;
+  background: #fff; cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.pixel-arrow, .pixel-arrow-small {
+  background: #fff; border: 2px solid #000;
+  box-shadow: 2px 2px 0px #000; cursor: pointer;
+}
+
+.pixel-arrow { padding: 5px 12px; }
+.pixel-arrow-small { padding: 3px 8px; font-size: 12px; }
+
+.back-home-btn {
+  position: absolute; top: 15px; right: 15px;
+  background: none; border: none; font-size: 24px; font-weight: bold;
+}
+
+/* --- BOOTH ENGINE --- */
+.booth-layout-wrapper {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px; padding: 10px;
+}
+
+.side-controls { display: flex; gap: 25px; }
+.icon-btn { width: 50px; cursor: pointer; }
 
 .booth {
-  position: relative;
-  width: 90vw;
-  max-width: 400px;
-  margin: 0 auto;
-  overflow: hidden; /* This crops the video bleed so it looks clean */
-  background: #000;
+  position: relative; width: 90vw; max-width: 400px;
+  margin: 0 auto; background: #000; line-height: 0;
+}
+
+#frameOverlay {
+  position: relative; width: 100%; height: auto;
+  z-index: 10; pointer-events: none;
 }
 
 video {
-  position: absolute;
-  z-index: 1;
-  transform: scaleX(-1);
-  /* This allows the video to be distorted/stretched to your exact % */
-  object-fit: cover; 
-  display: block;
+  position: absolute; z-index: 1;
+  object-fit: cover; transform: scaleX(-1);
+}
+
+#photoPreviewContainer {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; z-index: 5;
 }
 
 .captured-slot-photo {
-  position: absolute;
-  z-index: 5;
-  object-fit: cover;
-  display: block;
+  position: absolute; object-fit: cover;
+}
+
+#countdown {
+  position: absolute; top: 15px; width: 100%;
+  font-size: 50px; color: white; z-index: 100;
+  text-shadow: 2px 2px 0px #000;
+}
+
+@media (min-width: 900px) {
+  .booth-layout-wrapper { flex-direction: row; gap: 40px; }
+  .side-controls { flex-direction: column; }
 }
