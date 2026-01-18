@@ -33,7 +33,8 @@ const frames = [
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
-let msgIndex = 1, totalMessages = 3; 
+let msgIndex = 1;
+const totalMessages = 2; // Fixed: Cycles between birthdaymsg1 and birthdaymsg2
 
 // Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
@@ -81,7 +82,7 @@ document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex 
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// Capture with Flash and Animation
+// Capture with Feedback
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -95,7 +96,6 @@ document.getElementById("captureBtn").onclick = () => {
       clearInterval(timer);
       countdownEl.textContent = "";
       
-      // Flash Visual
       camera.classList.add("flash-effect");
       setTimeout(() => camera.classList.remove("flash-effect"), 200);
 
@@ -123,10 +123,9 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// Download with Feedback
+// Download
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
-  
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
