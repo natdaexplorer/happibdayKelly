@@ -1,11 +1,9 @@
-// 1. Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
 const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// 2. Data Structures
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -31,7 +29,6 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 
-// 3. Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -40,9 +37,6 @@ document.getElementById("btnStartBooth").onclick = async () => {
   loadFrame();
 };
 
-document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
-
-// 4. Position Logic
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) {
@@ -50,14 +44,11 @@ function updateCameraPosition() {
     return;
   }
   const slot = currentSlots[shotIndex];
-  
   camera.style.opacity = "1";
-  // Force percentages
-  camera.style.setProperty('left', slot.x + "%", 'important');
-  camera.style.setProperty('top', slot.y + "%", 'important');
-  camera.style.setProperty('width', slot.w + "%", 'important');
-  camera.style.setProperty('height', slot.h + "%", 'important');
-  camera.style.objectFit = "cover"; 
+  camera.style.left = slot.x + "%";
+  camera.style.top = slot.y + "%";
+  camera.style.width = slot.w + "%";
+  camera.style.height = slot.h + "%";
 }
 
 function loadFrame() {
@@ -71,7 +62,6 @@ function loadFrame() {
 document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 
-// 5. Capture & Download (Standard Logic)
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -92,10 +82,8 @@ document.getElementById("captureBtn").onclick = () => {
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
       img.src = photoData; img.className = "captured-slot-photo";
-      img.style.setProperty('left', slot.x + "%", 'important');
-      img.style.setProperty('top', slot.y + "%", 'important');
-      img.style.setProperty('width', slot.w + "%", 'important');
-      img.style.setProperty('height', slot.h + "%", 'important');
+      img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
+      img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
       photoPreviewContainer.appendChild(img);
       shotIndex++;
       updateCameraPosition();
@@ -103,12 +91,10 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- 6. DEBUG COORDINATE FINDER ---
-// Press Arrow Keys to move. Press W/S for Height, A/D for Width.
+// --- ARROW KEY DEBUGGER ---
 window.addEventListener('keydown', (e) => {
-  const currentSlots = frames[frameIndex].slots;
-  const slot = currentSlots[shotIndex] || currentSlots[0];
-  const step = 0.2; // High precision movement
+  const slot = frames[frameIndex].slots[shotIndex] || frames[frameIndex].slots[0];
+  const step = 0.5; 
 
   if (e.key === "ArrowUp")    slot.y -= step;
   if (e.key === "ArrowDown")  slot.y += step;
@@ -120,7 +106,5 @@ window.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === "a") slot.w -= step;
 
   updateCameraPosition();
-  
-  // LOGS TO CONSOLE: Press F12 to see the numbers
-  console.log(`Frame ${frameIndex + 1}, Slot ${shotIndex + 1}: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
+  console.log(`Current: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
 });
