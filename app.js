@@ -34,7 +34,7 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 let msgIndex = 1;
-const totalMessages = 2; 
+const totalMessages = 2; // Fixed cycle
 
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
@@ -133,7 +133,7 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "cottagecore_booth.png"; a.href = canvas.toDataURL(); a.click();
+          a.download = "photobooth.png"; a.href = canvas.toDataURL(); a.click();
         }
       };
     });
