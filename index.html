@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Photobooth</title>
+  <title>Birthday Booth</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -12,6 +12,13 @@
   <button id="btnMessage" class="main-nav-btn">Birthday Message</button>
   <button id="btnStartBooth" class="main-nav-btn">Take Photos</button>
 </div>
+
+<section id="messageSection" class="hidden">
+  <div class="message-container">
+    <img id="messageImage" src="assets/messages/birthdaymsg1.png" style="max-width: 80vw;"/>
+    <button class="back-home-btn">X</button>
+  </div>
+</section>
 
 <section id="photoSection" class="hidden">
   <div class="top-bar">
@@ -29,7 +36,6 @@
       <img id="captureBtn" src="assets/ui/cameraicon.png" class="icon-btn" alt="Capture"/>
       <img id="downloadBtn" src="assets/ui/saveimageicon.png" class="icon-btn" alt="Save"/>
     </div>
-
     <div class="booth">
       <img id="frameOverlay" src="assets/frames/frame1.png"/>
       <video id="camera" autoplay playsinline></video>
