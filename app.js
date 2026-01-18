@@ -2,7 +2,7 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- MUSIC LOGIC ---
+// --- REPAIRED MUSIC LOGIC ---
 const audio = new Audio("assets/music/song.mp3");
 audio.loop = true;
 
@@ -10,16 +10,26 @@ const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    // We play() and handle potential errors in console
-    audio.play().catch(e => console.error("Audio Playback Error:", e));
-    musicToggle.classList.remove("muted");
+    audio.play()
+      .then(() => {
+        musicToggle.classList.remove("muted");
+      })
+      .catch(err => {
+        console.error("Audio failed to play. Check if file exists at assets/music/song.mp3");
+        alert("The browser blocked the music or the file wasn't found. Check the file name!");
+      });
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
   }
 };
 
-// --- FRAMES CONFIG ---
+// Check if file is found by browser
+audio.onerror = () => {
+  console.error("CRITICAL: File not found at assets/music/song.mp3");
+};
+
+// --- FRAMES ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -29,7 +39,7 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 
-// --- NAVIGATION ---
+// --- NAVIGATION (No Refresh) ---
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -100,7 +110,7 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- DOWNLOAD (Anti-Stretch) ---
+// --- DOWNLOAD (No Stretch) ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
