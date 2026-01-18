@@ -15,15 +15,23 @@ const frames = [
   },
   { 
     src: "assets/frames/frame2.png", 
-    slots: [{ x: 13, y: 8, w: 74, h: 39 }, { x: 13, y: 51, w: 74, h: 39 }] 
+    slots: [
+      { x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, // Slot 1
+      { x: 13.0, y: 51.0, w: 82.7, h: 42.0 } // Slot 2
+    ] 
   },
   { 
     src: "assets/frames/frame3.png", 
-    slots: [{ x: 6, y: 39.5, w: 54, h: 48 }] 
+    slots: [
+      { x: 8.5, y: 34.0, w: 46.2, h: 30.0 } // One Slot
+    ] 
   },
   { 
     src: "assets/frames/frame4.png", 
-    slots: [{ x: 21.5, y: 20, w: 57.5, h: 52 }] 
+    slots: [
+      { x: 11.0, y: 20.0, w: 33.0, h: 25.0 }, // First Slot (Left)
+      { x: 50.0, y: 20.0, w: 33.0, h: 25.0 }  // Second Slot (Right - Placeholder)
+    ] 
   }
 ];
 
@@ -91,7 +99,7 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- ARROW KEY DEBUGGER ---
+// --- ARROW KEY DEBUGGER (Keep this until all slots are found) ---
 window.addEventListener('keydown', (e) => {
   const slot = frames[frameIndex].slots[shotIndex] || frames[frameIndex].slots[0];
   const step = 0.5; 
@@ -106,5 +114,5 @@ window.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === "a") slot.w -= step;
 
   updateCameraPosition();
-  console.log(`Current: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
+  console.log(`Frame ${frameIndex + 1}, Slot ${shotIndex + 1}: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
 });
