@@ -2,34 +2,45 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- MUSIC LOGIC ---
-const audio = new Audio("./assets/assets/music/song.mp3");
+// --- MUSIC LOGIC WITH AUTOMATIC PATH-SWITCHER ---
+const audio = new Audio();
 audio.loop = true;
+
+// Define your paths here
+const path1 = "assets/assets/music/song.mp3";
+const path2 = "assets/music/song.mp3";
+
+audio.src = path1; // Try the double folder first
 
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    audio.play()
-      .then(() => {
+    audio.play().then(() => {
+      musicToggle.classList.remove("muted");
+    }).catch(() => {
+      // If path1 fails, switch to path2 and try again
+      console.warn("Path 1 failed, trying Path 2...");
+      audio.src = path2;
+      audio.play().then(() => {
         musicToggle.classList.remove("muted");
-      })
-      .catch(err => {
-        console.error("Playback failed:", err);
-        alert("Audio file not found at ./assets/assets/music/song.mp3");
+      }).catch(err => {
+        console.error("All music paths failed:", err);
+        alert("The browser couldn't find your song.mp3 in either folder.");
       });
+    });
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
   }
 };
 
-// --- BOOTH CONFIG ---
+// --- BOOTH NAVIGATION ---
 const frames = [
-  { src: "./assets/assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
-  { src: "./assets/assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
-  { src: "./assets/assets/frames/frame3.png", slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] },
-  { src: "./assets/assets/frames/frame4.png", slots: [{ x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }] }
+  { src: "assets/assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
+  { src: "assets/assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
+  { src: "assets/assets/frames/frame3.png", slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] },
+  { src: "assets/assets/frames/frame4.png", slots: [{ x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }] }
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
@@ -37,8 +48,10 @@ let frameIndex = 0, shotIndex = 0, capturedImages = [];
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  camera.srcObject = stream;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    camera.srcObject = stream;
+  } catch (err) { alert("Camera access denied."); }
   loadFrame();
 };
 
@@ -56,20 +69,20 @@ document.querySelectorAll(".back-home-btn").forEach(btn => {
   };
 });
 
-function updateCameraPosition() {
-  const currentSlots = frames[frameIndex].slots;
-  if (shotIndex >= currentSlots.length) { camera.style.opacity = "0"; return; }
-  const slot = currentSlots[shotIndex];
-  camera.style.opacity = "1";
-  camera.style.left = slot.x + "%"; camera.style.top = slot.y + "%";
-  camera.style.width = slot.w + "%"; camera.style.height = slot.h + "%";
-}
-
 function loadFrame() {
   frameOverlay.src = frames[frameIndex].src;
   shotIndex = 0; capturedImages = [];
   photoPreviewContainer.innerHTML = ""; 
   updateCameraPosition();
+}
+
+function updateCameraPosition() {
+  const currentSlots = frames[frameIndex].slots;
+  if (shotIndex >= currentSlots.length) { camera.style.opacity = "0"; return; }
+  camera.style.opacity = "1";
+  const slot = currentSlots[shotIndex];
+  camera.style.left = slot.x + "%"; camera.style.top = slot.y + "%";
+  camera.style.width = slot.w + "%"; camera.style.height = slot.h + "%";
 }
 
 document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
@@ -79,28 +92,22 @@ document.getElementById("resetBtn").onclick = () => loadFrame();
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-  let count = 3;
-  const timer = setInterval(() => {
-    count--;
-    if (count === 0) {
-      clearInterval(timer);
-      const canvas = document.createElement("canvas");
-      canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
-      ctx.drawImage(camera, 0, 0);
-      const photoData = canvas.toDataURL("image/png");
-      capturedImages.push(photoData);
+  
+  const canvas = document.createElement("canvas");
+  canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+  ctx.drawImage(camera, 0, 0);
+  const photoData = canvas.toDataURL("image/png");
+  capturedImages.push(photoData);
 
-      const slot = currentSlots[shotIndex];
-      const img = document.createElement("img");
-      img.src = photoData; img.className = "captured-slot-photo";
-      img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
-      img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
-      photoPreviewContainer.appendChild(img);
-      shotIndex++; updateCameraPosition();
-    }
-  }, 1000);
+  const slot = currentSlots[shotIndex];
+  const img = document.createElement("img");
+  img.src = photoData; img.className = "captured-slot-photo";
+  img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
+  img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
+  photoPreviewContainer.appendChild(img);
+  shotIndex++; updateCameraPosition();
 };
 
 document.getElementById("downloadBtn").onclick = () => {
@@ -119,16 +126,12 @@ document.getElementById("downloadBtn").onclick = () => {
         const s = frames[frameIndex].slots[i];
         const targetW = (s.w / 100) * canvas.width, targetH = (s.h / 100) * canvas.height;
         const targetX = (s.x / 100) * canvas.width, targetY = (s.y / 100) * canvas.height;
-        const imgRatio = img.width / img.height, targetRatio = targetW / targetH;
-        let sx, sy, sw, sh;
-        if (imgRatio > targetRatio) { sh = img.height; sw = img.height * targetRatio; sx = (img.width - sw) / 2; sy = 0; }
-        else { sw = img.width; sh = img.width / targetRatio; sx = 0; sy = (img.height - sh) / 2; }
-        ctx.drawImage(img, sx, sy, sw, sh, targetX, targetY, targetW, targetH);
+        ctx.drawImage(img, 0, 0, img.width, img.height, targetX, targetY, targetW, targetH);
         loaded++;
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "HappyBirthdayBooth.png"; a.href = canvas.toDataURL("image/png", 1.0); a.click();
+          a.download = "HappyBirthdayBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
