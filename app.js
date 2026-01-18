@@ -1,10 +1,8 @@
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
-const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// 1. DATA: Frame Coordinates
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -35,9 +33,8 @@ const frames = [
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
-let msgIndex = 1, totalMessages = 3; // Adjust based on your files
+let msgIndex = 1, totalMessages = 3; 
 
-// 2. NAVIGATION
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -58,7 +55,6 @@ document.getElementById("nextMessage").onclick = () => {
 
 document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
 
-// 3. BOOTH ENGINE
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) {
@@ -75,7 +71,6 @@ function updateCameraPosition() {
 
 function loadFrame() {
   frameOverlay.src = frames[frameIndex].src;
-  frameCounter.textContent = frameIndex + 1;
   shotIndex = 0; capturedImages = [];
   photoPreviewContainer.innerHTML = ""; 
   updateCameraPosition();
@@ -85,7 +80,6 @@ document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex 
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// 4. CAPTURE LOGIC
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -116,7 +110,6 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// 5. DOWNLOAD
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
