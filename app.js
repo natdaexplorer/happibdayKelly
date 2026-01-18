@@ -35,6 +35,7 @@ const frames = [
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 let msgIndex = 1, totalMessages = 3; 
 
+// Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -80,6 +81,7 @@ document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex 
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
+// Capture Logic
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -110,6 +112,7 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
+// Download Logic
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
