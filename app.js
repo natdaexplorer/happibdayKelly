@@ -1,34 +1,3 @@
-// --- BUTTON NAVIGATION LOGIC ---
-
-// 1. "Take Photos" Button
-document.getElementById("btnStartBooth").onclick = async () => {
-  document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("photoSection").classList.remove("hidden");
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-      video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
-    });
-    camera.srcObject = stream;
-    loadFrame();
-  } catch (err) {
-    alert("Camera access denied. Please check browser permissions.");
-  }
-};
-
-// 2. "Birthday Message" Button
-document.getElementById("btnMessage").onclick = () => {
-  document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("messageSection").classList.remove("hidden");
-};
-
-// 3. "X" (Back) Buttons
-document.querySelectorAll(".back-home-btn").forEach(btn => {
-  btn.onclick = () => {
-    // This refreshes the page to go back to the main menu
-    location.reload(); 
-  };
-});
-
 // 1. Setup Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
@@ -36,7 +5,7 @@ const countdownEl = document.getElementById("countdown");
 const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// 2. Final Data Structure with your measured coordinates
+// 2. Final Data Structure
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -62,8 +31,8 @@ const frames = [
   { 
     src: "assets/frames/frame4.png", 
     slots: [
-      { x: 11.0, y: 20.0, w: 33.0, h: 25.0 }, // Left Slot
-      { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }  // Right Slot
+      { x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, // Updated Slot 1
+      { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }  // Updated Slot 2
     ] 
   }
 ];
@@ -72,7 +41,9 @@ let frameIndex = 0;
 let shotIndex = 0;
 let capturedImages = [];
 
-// 3. Navigation & Camera Initialization
+// --- NAVIGATION LOGIC ---
+
+// Start Booth Button
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -83,23 +54,29 @@ document.getElementById("btnStartBooth").onclick = async () => {
     camera.srcObject = stream;
     loadFrame();
   } catch (err) {
-    alert("Camera access denied. Please check browser permissions.");
+    alert("Camera access denied.");
   }
 };
 
+// Message Section Button
+document.getElementById("btnMessage").onclick = () => {
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("messageSection").classList.remove("hidden");
+};
+
+// Back Home Buttons
 document.querySelectorAll(".back-home-btn").forEach(btn => {
   btn.onclick = () => location.reload();
 });
 
-// 4. Core Positioning Logic
+// --- CORE BOOTH LOGIC ---
+
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
-  
   if (shotIndex >= currentSlots.length) {
-    camera.style.opacity = "0"; // Hide camera when shots are finished
+    camera.style.opacity = "0";
     return;
   }
-
   const slot = currentSlots[shotIndex];
   camera.style.opacity = "1";
   camera.style.left = slot.x + "%";
@@ -129,14 +106,13 @@ document.getElementById("nextFrame").onclick = () => {
 
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// 5. Capture Logic
+// Capture
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
-  if (shotIndex >= currentSlots.length) return alert("Frame is full! Reset to take more.");
+  if (shotIndex >= currentSlots.length) return;
 
   let count = 3;
   countdownEl.textContent = count;
-  
   const timer = setInterval(() => {
     count--;
     if (count === 0) {
@@ -147,8 +123,6 @@ document.getElementById("captureBtn").onclick = () => {
       canvas.width = camera.videoWidth;
       canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
-      
-      // Mirror the capture for natural look
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
@@ -156,7 +130,6 @@ document.getElementById("captureBtn").onclick = () => {
       const photoData = canvas.toDataURL("image/png");
       capturedImages.push(photoData);
 
-      // Create Preview Image
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
       img.src = photoData;
@@ -169,83 +142,54 @@ document.getElementById("captureBtn").onclick = () => {
       photoPreviewContainer.appendChild(img);
       shotIndex++;
       updateCameraPosition();
-
-      // Simple flash effect
-      camera.style.filter = "brightness(3)";
-      setTimeout(() => camera.style.filter = "none", 100);
     } else {
       countdownEl.textContent = count;
     }
   }, 1000);
 };
 
-// 6. Final Download/Save Logic
+// Download
 document.getElementById("downloadBtn").onclick = () => {
-  if (capturedImages.length === 0) return alert("Take some photos first!");
-
+  if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
-
   frameImg.onload = () => {
     canvas.width = frameImg.width;
     canvas.height = frameImg.height;
-
-    let loadedCount = 0;
+    let loaded = 0;
     capturedImages.forEach((data, i) => {
       const img = new Image();
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        const sw = (s.w / 100) * canvas.width;
-        const sh = (s.h / 100) * canvas.height;
-        const sx = (s.x / 100) * canvas.width;
-        const sy = (s.y / 100) * canvas.height;
-
-        // Aspect Ratio Fitting (Cover)
-        const imgRatio = img.width / img.height;
-        const slotRatio = sw / sh;
-        let cx, cy, cw, ch;
-
-        if (imgRatio > slotRatio) {
-          cw = img.height * slotRatio; ch = img.height;
-          cx = (img.width - cw) / 2; cy = 0;
-        } else {
-          cw = img.width; ch = img.width / slotRatio;
-          cx = 0; cy = (img.height - ch) / 2;
-        }
-
-        ctx.drawImage(img, cx, cy, cw, ch, sx, sy, sw, sh);
-        
-        loadedCount++;
-        if (loadedCount === capturedImages.length) {
+        const sw = (s.w/100)*canvas.width, sh = (s.h/100)*canvas.height;
+        const sx = (s.x/100)*canvas.width, sy = (s.y/100)*canvas.height;
+        ctx.drawImage(img, sx, sy, sw, sh);
+        loaded++;
+        if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-          const link = document.createElement("a");
-          link.download = `photobooth_${Date.now()}.png`;
-          link.href = canvas.toDataURL("image/png");
-          link.click();
+          const a = document.createElement("a");
+          a.download = "result.png"; a.href = canvas.toDataURL(); a.click();
         }
       };
     });
   };
 };
 
-// --- ARROW KEY DEBUGGER (For final tweaks) ---
+// Arrow Key Debugger
 window.addEventListener('keydown', (e) => {
-  const currentSlots = frames[frameIndex].slots;
-  const slot = currentSlots[shotIndex] || currentSlots[0];
-  const step = 0.5;
-
-  if (e.key === "ArrowUp")    slot.y -= step;
-  if (e.key === "ArrowDown")  slot.y += step;
-  if (e.key === "ArrowLeft")  slot.x -= step;
+  const slot = frames[frameIndex].slots[shotIndex] || frames[frameIndex].slots[0];
+  const step = 0.5; 
+  if (e.key === "ArrowUp") slot.y -= step;
+  if (e.key === "ArrowDown") slot.y += step;
+  if (e.key === "ArrowLeft") slot.x -= step;
   if (e.key === "ArrowRight") slot.x += step;
   if (e.key.toLowerCase() === "w") slot.h += step;
   if (e.key.toLowerCase() === "s") slot.h -= step;
   if (e.key.toLowerCase() === "d") slot.w += step;
   if (e.key.toLowerCase() === "a") slot.w -= step;
-
   updateCameraPosition();
-  console.log(`Current Slot: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
+  console.log(`F${frameIndex+1} S${shotIndex+1}: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
 });
