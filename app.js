@@ -14,7 +14,6 @@ let frameIndex = 0, shotIndex = 0, capturedImages = [];
 let msgIndex = 1;
 const totalMessages = 2;
 
-// Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -55,7 +54,6 @@ document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex 
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// Capture Logic
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -83,33 +81,54 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// HIGH RES DOWNLOAD LOGIC
+// DOWNLOAD LOGIC WITH NO STRETCHING
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
+  
   frameImg.onload = () => {
-    // Set canvas to natural template size to avoid compression
     canvas.width = frameImg.naturalWidth;
     canvas.height = frameImg.naturalHeight;
     let loaded = 0;
+    
     capturedImages.forEach((data, i) => {
       const img = new Image();
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        const sw = (s.w / 100) * canvas.width;
-        const sh = (s.h / 100) * canvas.height;
-        const sx = (s.x / 100) * canvas.width;
-        const sy = (s.y / 100) * canvas.height;
-        ctx.drawImage(img, sx, sy, sw, sh);
+        
+        const targetW = (s.w / 100) * canvas.width;
+        const targetH = (s.h / 100) * canvas.height;
+        const targetX = (s.x / 100) * canvas.width;
+        const targetY = (s.y / 100) * canvas.height;
+
+        // Aspect Ratio Calculation (Cover logic)
+        const imgRatio = img.width / img.height;
+        const targetRatio = targetW / targetH;
+        let sx, sy, sw, sh;
+
+        if (imgRatio > targetRatio) {
+          sh = img.height;
+          sw = img.height * targetRatio;
+          sx = (img.width - sw) / 2;
+          sy = 0;
+        } else {
+          sw = img.width;
+          sh = img.width / targetRatio;
+          sx = 0;
+          sy = (img.height - sh) / 2;
+        }
+
+        ctx.drawImage(img, sx, sy, sw, sh, targetX, targetY, targetW, targetH);
         loaded++;
+        
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "highres_booth.png";
+          a.download = "HappyBirthday_Booth.png";
           a.href = canvas.toDataURL("image/png", 1.0);
           a.click();
         }
