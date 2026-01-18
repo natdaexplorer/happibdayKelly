@@ -1,16 +1,19 @@
+// Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- CONTINUOUS MUSIC LOGIC ---
+// --- MUSIC LOGIC ---
+// Ensure this path is correct: assets/music/song.mp3
 const audio = new Audio("assets/music/song.mp3");
 audio.loop = true;
+
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    audio.play();
+    audio.play().catch(err => console.log("Playback failed:", err));
     musicToggle.classList.remove("muted");
   } else {
     audio.pause();
@@ -18,6 +21,7 @@ musicToggle.onclick = () => {
   }
 };
 
+// --- FRAME CONFIG ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -104,7 +108,7 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- DOWNLOAD (No Stretch) ---
+// --- DOWNLOAD ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
@@ -119,10 +123,8 @@ document.getElementById("downloadBtn").onclick = () => {
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        const targetW = (s.w / 100) * canvas.width;
-        const targetH = (s.h / 100) * canvas.height;
-        const targetX = (s.x / 100) * canvas.width;
-        const targetY = (s.y / 100) * canvas.height;
+        const targetW = (s.w / 100) * canvas.width, targetH = (s.h / 100) * canvas.height;
+        const targetX = (s.x / 100) * canvas.width, targetY = (s.y / 100) * canvas.height;
         const imgRatio = img.width / img.height, targetRatio = targetW / targetH;
         let sx, sy, sw, sh;
         if (imgRatio > targetRatio) { sh = img.height; sw = img.height * targetRatio; sx = (img.width - sw) / 2; sy = 0; }
