@@ -2,28 +2,31 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- PERSISTENT MUSIC LOGIC ---
-const audio = new Audio("assets/music/song.mp3");
+// --- MUSIC LOGIC ---
+// Using "./" tells GitHub to look in the CURRENT folder first.
+const audio = new Audio("./assets/music/song.mp3");
 audio.loop = true;
 
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    audio.play()
-      .then(() => {
-        musicToggle.classList.remove("muted"); // Removes Slash
-      })
-      .catch(err => {
-        console.error("Playback failed. Please check your folder path.", err);
-      });
+    // 1. Visually change the button immediately so it's not "stuck"
+    musicToggle.classList.remove("muted");
+    
+    // 2. Try to play
+    audio.play().catch(err => {
+      console.error("Audio error:", err);
+      // If it fails, put the slash back
+      musicToggle.classList.add("muted");
+    });
   } else {
     audio.pause();
-    musicToggle.classList.add("muted"); // Adds Slash back
+    musicToggle.classList.add("muted");
   }
 };
 
-// --- FRAMES CONFIG ---
+// --- REST OF YOUR CODE (NO CHANGES TO BOOTH LOGIC) ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -33,7 +36,6 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 
-// --- NAVIGATION ---
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -47,7 +49,6 @@ document.getElementById("btnMessage").onclick = () => {
   document.getElementById("messageSection").classList.remove("hidden");
 };
 
-// Back button logic (does NOT refresh page, so music keeps playing)
 document.querySelectorAll(".back-home-btn").forEach(btn => {
   btn.onclick = () => {
     document.getElementById("photoSection").classList.add("hidden");
@@ -57,7 +58,6 @@ document.querySelectorAll(".back-home-btn").forEach(btn => {
   };
 });
 
-// --- BOOTH LOGIC ---
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) { camera.style.opacity = "0"; return; }
@@ -105,7 +105,6 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- DOWNLOAD ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
