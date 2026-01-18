@@ -1,11 +1,10 @@
-// 1. Setup Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
 const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// 2. Final Data Structure
+// 1. DATA: Frame Coordinates (Finalized)
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -31,46 +30,37 @@ const frames = [
   { 
     src: "assets/frames/frame4.png", 
     slots: [
-      { x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, // Updated Slot 1
-      { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }  // Updated Slot 2
+      { x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, 
+      { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }
     ] 
   }
 ];
 
-let frameIndex = 0;
-let shotIndex = 0;
-let capturedImages = [];
+let frameIndex = 0, shotIndex = 0, capturedImages = [];
+let msgIndex = 1, totalMessages = 3; // Update totalMessages as needed
 
-// --- NAVIGATION LOGIC ---
-
-// Start Booth Button
+// 2. LANDING PAGE NAVIGATION
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-      video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
-    });
-    camera.srcObject = stream;
-    loadFrame();
-  } catch (err) {
-    alert("Camera access denied.");
-  }
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  camera.srcObject = stream;
+  loadFrame();
 };
 
-// Message Section Button
 document.getElementById("btnMessage").onclick = () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("messageSection").classList.remove("hidden");
 };
 
-// Back Home Buttons
-document.querySelectorAll(".back-home-btn").forEach(btn => {
-  btn.onclick = () => location.reload();
-});
+document.getElementById("nextMessage").onclick = () => {
+  msgIndex = (msgIndex % totalMessages) + 1;
+  document.getElementById("messageImage").src = `assets/messages/birthdaymsg${msgIndex}.png`;
+};
 
-// --- CORE BOOTH LOGIC ---
+document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
 
+// 3. BOOTH ENGINE
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) {
@@ -88,25 +78,16 @@ function updateCameraPosition() {
 function loadFrame() {
   frameOverlay.src = frames[frameIndex].src;
   frameCounter.textContent = frameIndex + 1;
-  shotIndex = 0;
-  capturedImages = [];
+  shotIndex = 0; capturedImages = [];
   photoPreviewContainer.innerHTML = ""; 
   updateCameraPosition();
 }
 
-document.getElementById("prevFrame").onclick = () => {
-  frameIndex = (frameIndex - 1 + frames.length) % frames.length;
-  loadFrame();
-};
-
-document.getElementById("nextFrame").onclick = () => {
-  frameIndex = (frameIndex + 1) % frames.length;
-  loadFrame();
-};
-
+document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
+document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// Capture
+// 4. CAPTURE LOGIC
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
@@ -118,37 +99,28 @@ document.getElementById("captureBtn").onclick = () => {
     if (count === 0) {
       clearInterval(timer);
       countdownEl.textContent = "";
-      
       const canvas = document.createElement("canvas");
-      canvas.width = camera.videoWidth;
-      canvas.height = camera.videoHeight;
+      canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
       const ctx = canvas.getContext("2d");
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
+      ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
-      
       const photoData = canvas.toDataURL("image/png");
       capturedImages.push(photoData);
 
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
-      img.src = photoData;
-      img.className = "captured-slot-photo";
-      img.style.left = slot.x + "%";
-      img.style.top = slot.y + "%";
-      img.style.width = slot.w + "%";
-      img.style.height = slot.h + "%";
-      
+      img.src = photoData; img.className = "captured-slot-photo";
+      img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
+      img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
       photoPreviewContainer.appendChild(img);
+
       shotIndex++;
       updateCameraPosition();
-    } else {
-      countdownEl.textContent = count;
-    }
+    } else { countdownEl.textContent = count; }
   }, 1000);
 };
 
-// Download
+// 5. DOWNLOAD LOGIC
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
@@ -156,8 +128,7 @@ document.getElementById("downloadBtn").onclick = () => {
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
   frameImg.onload = () => {
-    canvas.width = frameImg.width;
-    canvas.height = frameImg.height;
+    canvas.width = frameImg.width; canvas.height = frameImg.height;
     let loaded = 0;
     capturedImages.forEach((data, i) => {
       const img = new Image();
@@ -171,25 +142,9 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "result.png"; a.href = canvas.toDataURL(); a.click();
+          a.download = "photobooth.png"; a.href = canvas.toDataURL(); a.click();
         }
       };
     });
   };
 };
-
-// Arrow Key Debugger
-window.addEventListener('keydown', (e) => {
-  const slot = frames[frameIndex].slots[shotIndex] || frames[frameIndex].slots[0];
-  const step = 0.5; 
-  if (e.key === "ArrowUp") slot.y -= step;
-  if (e.key === "ArrowDown") slot.y += step;
-  if (e.key === "ArrowLeft") slot.x -= step;
-  if (e.key === "ArrowRight") slot.x += step;
-  if (e.key.toLowerCase() === "w") slot.h += step;
-  if (e.key.toLowerCase() === "s") slot.h -= step;
-  if (e.key.toLowerCase() === "d") slot.w += step;
-  if (e.key.toLowerCase() === "a") slot.w -= step;
-  updateCameraPosition();
-  console.log(`F${frameIndex+1} S${shotIndex+1}: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
-});
