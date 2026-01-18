@@ -1,59 +1,29 @@
-/* --- GLOBAL --- */
 body {
   margin: 0; padding: 0;
   font-family: 'Georgia', serif;
   background: #F9F7F2;
   text-align: center;
   color: #8DAA91;
-  overflow-x: hidden;
 }
 
 .hidden { display: none !important; }
 
-/* --- MUSIC TOGGLE (NO BACKGROUND) --- */
+/* --- MUSIC TOGGLE --- */
 #musicToggle {
   position: absolute; top: 25px; right: 25px;
   width: 45px; height: 45px;
   cursor: pointer; display: flex; justify-content: center; align-items: center;
-  z-index: 1000;
 }
-
-#musicSymbol { font-size: 42px; color: #8DAA91; line-height: 1; user-select: none; }
+#musicSymbol { font-size: 40px; color: #8DAA91; user-select: none; }
 
 #musicToggle .slash {
-  position: absolute; 
-  width: 3px; 
-  height: 100%;
-  background-color: #ff6b6b; 
-  transform: rotate(45deg);
+  position: absolute; width: 3px; height: 100%;
+  background-color: #ff6b6b; transform: rotate(45deg);
   display: none; /* Hidden by default */
 }
-
-/* This is what shows the slash when muted */
-#musicToggle.muted .slash {
-  display: block;
-}
-
-/* Logic to show slash when muted class is active */
 #musicToggle.muted .slash { display: block; }
-#musicToggle.muted #musicSymbol { opacity: 0.5; }
 
-/* --- LANDING PAGE --- */
-.screen-center {
-  position: relative;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  height: 100vh; gap: 20px;
-}
-
-.main-nav-btn {
-  padding: 15px 40px; border: 2.5px solid #8DAA91;
-  background: #fff; border-radius: 100px;
-  cursor: pointer; font-weight: bold; font-size: 18px;
-  color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91;
-}
-
-/* --- BOOTH TOP BAR (RESET SPACING) --- */
+/* --- TOP BAR (REVERTED) --- */
 .top-bar {
   display: flex; justify-content: center; align-items: center;
   position: relative; height: 80px;
@@ -81,20 +51,14 @@ body {
   color: #8DAA91; border-radius: 50px; cursor: pointer;
 }
 
-/* --- BOOTH LAYOUT --- */
+/* --- BOOTH & LANDING --- */
+.screen-center { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; gap: 20px; }
+.main-nav-btn { padding: 15px 40px; border: 2.5px solid #8DAA91; background: #fff; border-radius: 100px; cursor: pointer; font-weight: bold; color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91; }
 .booth-layout-wrapper { display: flex; flex-direction: column; align-items: center; gap: 25px; padding: 20px; }
 .booth { position: relative; width: 90vw; max-width: 400px; margin: 0 auto; line-height: 0; }
 #frameOverlay { position: relative; width: 100%; z-index: 10; pointer-events: none; }
 video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1); }
 .captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
-.icon-btn { width: 75px; cursor: pointer; }
 .side-controls { display: flex; gap: 50px; justify-content: center; }
-
-/* --- MESSAGE SECTION --- */
-.message-container {
-  position: relative; display: flex; flex-direction: column;
-  align-items: center; gap: 20px; background: #fff;
-  padding: 55px 20px 25px 20px; border-radius: 40px;
-  border: 3.5px solid #8DAA91; width: 92vw; max-width: 500px;
-  margin: auto;
-}
+.icon-btn { width: 75px; cursor: pointer; }
+.message-container { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; background: #fff; padding: 55px 20px 25px 20px; border-radius: 40px; border: 3.5px solid #8DAA91; width: 92vw; max-width: 500px; }
