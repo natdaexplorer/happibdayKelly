@@ -1,10 +1,11 @@
 /* --- GLOBAL --- */
 body {
   margin: 0; padding: 0;
-  font-family: 'Courier New', Courier, monospace;
-  background: #fffafa; /* Very light pink tint background */
+  font-family: 'Georgia', serif; /* More cottagecore serif font */
+  background: #F9F7F2; /* Cream/Parchment color */
   text-align: center;
   overflow-x: hidden;
+  color: #2D5A27; /* Dark Green Text */
 }
 
 .hidden { display: none !important; }
@@ -18,20 +19,20 @@ body {
 
 .main-nav-btn {
   padding: 15px 40px; 
-  border: 3px solid #f2b2b1; /* Pantone 13-1420 */
+  border: 3px solid #2D5A27; /* Dark Forest Green */
   background: #fff; 
   border-radius: 100px;
   cursor: pointer; 
   font-weight: bold; 
   font-size: 18px;
-  color: #f2b2b1;
-  box-shadow: 4px 4px 0px #f2b2b1;
+  color: #2D5A27;
+  box-shadow: 4px 4px 0px #2D5A27;
   transition: transform 0.1s;
 }
 
 /* --- MESSAGE SECTION --- */
 #messageSection {
-  background-color: #fdf2f2; 
+  background-color: #E8EBE0; /* Sage Green background */
   height: 100vh; display: flex;
   justify-content: center; align-items: center;
 }
@@ -42,55 +43,55 @@ body {
   background: #fff;
   padding: 30px; 
   border-radius: 40px; 
-  border: 4px solid #f2b2b1;
-}
-
-#messageImage {
-  width: 90vw; max-width: 600px; height: auto;
-  border-radius: 25px; object-fit: contain;
+  border: 4px solid #2D5A27;
 }
 
 #nextMessage {
   padding: 12px 30px; 
-  border: 3px solid #f2b2b1;
+  border: 3px solid #2D5A27;
   border-radius: 100px; 
   background: #fff;
-  color: #f2b2b1;
+  color: #2D5A27;
   font-weight: bold; 
   cursor: pointer; 
-  box-shadow: 3px 3px 0px #f2b2b1;
+  box-shadow: 3px 3px 0px #2D5A27;
 }
 
 /* --- BOOTH INTERFACE --- */
 .top-bar {
   display: flex; justify-content: center; align-items: center;
   position: relative; height: 80px;
-  background: #fff; border-bottom: 2px solid #f2b2b1;
+  background: #fff; border-bottom: 2px solid #2D5A27;
 }
 
 #resetBtn { 
   position: absolute; left: 20px; 
   font-size: 24px; width: 45px; height: 45px;
-  background: #fff; border: 2.5px solid #f2b2b1;
-  color: #f2b2b1;
+  background: #fff; border: 2.5px solid #2D5A27;
+  color: #2D5A27;
   border-radius: 50px; cursor: pointer;
 }
 
 .pixel-arrow { 
   padding: 4px 12px; font-size: 14px;
-  background: #fff; border: 2.5px solid #f2b2b1;
-  color: #f2b2b1;
+  background: #fff; border: 2.5px solid #2D5A27;
+  color: #2D5A27;
   border-radius: 50px; cursor: pointer;
 }
 
 /* --- ANIMATIONS & FEEDBACK --- */
-.icon-btn { width: 75px; height: auto; cursor: pointer; transition: transform 0.1s; }
+.icon-btn { 
+  width: 75px; 
+  filter: sepia(0.2) hue-rotate(80deg); /* Tints icons to be greener */
+  cursor: pointer; 
+  transition: transform 0.1s; 
+}
 .icon-btn:active { transform: scale(0.85); }
 
 .flash-effect { animation: flashAnim 0.2s ease-out; }
 @keyframes flashAnim {
   0% { filter: brightness(1); }
-  50% { filter: brightness(5); }
+  50% { filter: brightness(3); }
   100% { filter: brightness(1); }
 }
 
@@ -100,7 +101,7 @@ body {
   font-size: 80px; font-weight: 900; 
   color: #fff;
   z-index: 1000; 
-  text-shadow: 4px 4px 0px #f2b2b1;
+  text-shadow: 4px 4px 0px #2D5A27;
   pointer-events: none;
 }
 
@@ -118,7 +119,7 @@ body {
 .booth {
   position: relative; width: 90vw; max-width: 400px;
   margin: 0 auto; background: #fff; line-height: 0;
-  border: 4px solid #f2b2b1;
+  border: 4px solid #2D5A27;
 }
 
 #frameOverlay { position: relative; width: 100%; height: auto; z-index: 10; pointer-events: none; }
@@ -129,7 +130,7 @@ video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1)
   position: absolute; top: 50%; right: 20px;
   transform: translateY(-50%);
   background: none; border: none; font-size: 32px;
-  font-weight: 900; color: #f2b2b1; cursor: pointer;
+  font-weight: 900; color: #2D5A27; cursor: pointer;
 }
 
 @media (min-width: 900px) {
