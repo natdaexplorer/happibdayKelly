@@ -10,6 +10,24 @@ body {
 
 .hidden { display: none !important; }
 
+/* --- MUSIC TOGGLE (Top Right, No Background) --- */
+#musicToggle {
+  position: fixed; top: 20px; right: 20px;
+  width: 45px; height: 45px;
+  z-index: 3000; cursor: pointer;
+  display: flex; justify-content: center; align-items: center;
+}
+
+#musicIcon { width: 100%; height: 100%; object-fit: contain; }
+
+.slash {
+  position: absolute; width: 3px; height: 110%;
+  background-color: #ff6b6b; transform: rotate(45deg);
+  display: none; pointer-events: none;
+}
+
+#musicToggle.muted .slash { display: block; }
+
 /* --- LANDING PAGE --- */
 .screen-center {
   display: flex; flex-direction: column;
@@ -18,112 +36,38 @@ body {
 }
 
 .main-nav-btn {
-  padding: 15px 40px; 
-  border: 2.5px solid #8DAA91;
+  padding: 15px 40px; border: 2.5px solid #8DAA91;
   background: #fff; border-radius: 100px;
   cursor: pointer; font-weight: bold; font-size: 18px;
   color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91;
 }
 
-/* --- MESSAGE SECTION (ENLARGED & CENTERED X) --- */
-#messageSection {
-  height: 100vh; display: flex;
-  justify-content: center; align-items: center;
-  padding: 10px;
-}
-
+/* --- MESSAGE SECTION --- */
+#messageSection { height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
 .message-container {
-  position: relative;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 20px;
-  background: #fff; padding: 55px 20px 25px 20px;
-  border-radius: 40px; border: 3.5px solid #8DAA91;
-  width: 92vw; max-width: 600px;
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; gap: 20px; background: #fff;
+  padding: 55px 20px 25px 20px; border-radius: 40px;
+  border: 3.5px solid #8DAA91; width: 92vw; max-width: 600px;
   box-sizing: border-box;
 }
 
-#messageImage {
-  width: 100%; height: auto;
-  max-height: 65vh; border-radius: 15px;
-  object-fit: contain;
-}
+#messageImage { width: 100%; height: auto; max-height: 65vh; border-radius: 15px; object-fit: contain; }
+.message-container .back-home-btn { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 32px; color: #8DAA91; background: none; border: none; cursor: pointer; }
+#nextMessage { padding: 14px 40px; border: 2.5px solid #8DAA91; border-radius: 100px; background: #fff; color: #8DAA91; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 0px #8DAA91; }
 
-/* X Button specifically for the message container */
-.message-container .back-home-btn {
-  position: absolute; top: 15px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 32px; color: #8DAA91;
-  background: none; border: none; cursor: pointer;
-}
-
-#nextMessage {
-  padding: 14px 40px; border: 2.5px solid #8DAA91;
-  border-radius: 100px; background: #fff;
-  color: #8DAA91; font-weight: bold; cursor: pointer;
-  box-shadow: 3px 3px 0px #8DAA91;
-}
-
-/* --- PHOTO BOOTH UI --- */
-.top-bar {
-  display: flex; justify-content: center; align-items: center;
-  position: relative; height: 80px;
-  background: #fff; border-bottom: 2px solid #8DAA91;
-}
-
-#resetBtn { 
-  position: absolute; left: 20px; 
-  font-size: 24px; width: 45px; height: 45px;
-  background: #fff; border: 2px solid #8DAA91;
-  color: #8DAA91; border-radius: 50px;
-}
-
-.pixel-arrow { 
-  padding: 4px 12px; font-size: 14px;
-  background: #fff; border: 2px solid #8DAA91;
-  color: #8DAA91; border-radius: 50px;
-  cursor: pointer;
-}
-
+/* --- PHOTO BOOTH --- */
+.top-bar { display: flex; justify-content: center; align-items: center; position: relative; height: 80px; background: #fff; border-bottom: 2px solid #8DAA91; }
+#resetBtn { position: absolute; left: 20px; font-size: 24px; width: 45px; height: 45px; background: #fff; border: 2px solid #8DAA91; color: #8DAA91; border-radius: 50px; }
+.pixel-arrow { padding: 4px 12px; font-size: 14px; background: #fff; border: 2px solid #8DAA91; color: #8DAA91; border-radius: 50px; cursor: pointer; }
 .icon-btn { width: 75px; height: auto; cursor: pointer; transition: transform 0.1s; }
-.icon-btn:active { transform: scale(0.85); }
-
-/* --- THE BOOTH (NO BORDERS) --- */
-.booth-layout-wrapper {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 25px; padding: 20px;
-}
-
-.side-controls { 
-  display: flex; flex-direction: row; 
-  justify-content: center; width: 100%; gap: 50px; 
-}
-
-.booth {
-  position: relative; width: 90vw; max-width: 400px;
-  margin: 0 auto; line-height: 0;
-  border: none;
-}
-
+.booth-layout-wrapper { display: flex; flex-direction: column; align-items: center; gap: 25px; padding: 20px; }
+.side-controls { display: flex; flex-direction: row; justify-content: center; width: 100%; gap: 50px; }
+.booth { position: relative; width: 90vw; max-width: 400px; margin: 0 auto; line-height: 0; }
 #frameOverlay { position: relative; width: 100%; height: auto; z-index: 10; pointer-events: none; }
 video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1); }
 .captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
+#countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: #fff; z-index: 1000; text-shadow: 3px 3px 0px #8DAA91; pointer-events: none; }
+.top-bar .back-home-btn { position: absolute; right: 20px; background: none; border: none; font-size: 32px; color: #8DAA91; cursor: pointer; }
 
-#countdown {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 80px; font-weight: 900; color: #fff;
-  z-index: 1000; text-shadow: 3px 3px 0px #8DAA91;
-  pointer-events: none;
-}
-
-/* General X Button for top bar navigation */
-.top-bar .back-home-btn {
-  position: absolute; right: 20px;
-  background: none; border: none; font-size: 32px;
-  color: #8DAA91; cursor: pointer;
-}
-
-@media (min-width: 900px) {
-  .booth-layout-wrapper { flex-direction: row; justify-content: center; gap: 60px; }
-  .side-controls { flex-direction: column; width: auto; }
-}
+@media (min-width: 900px) { .booth-layout-wrapper { flex-direction: row; justify-content: center; gap: 60px; } .side-controls { flex-direction: column; width: auto; } }
