@@ -1,9 +1,11 @@
+// 1. Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
 const frameCounter = document.getElementById("frameCounter");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
+// 2. Data Structures
 const frames = [
   { 
     src: "assets/frames/frame1.png", 
@@ -29,6 +31,7 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 
+// 3. Navigation
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -39,7 +42,7 @@ document.getElementById("btnStartBooth").onclick = async () => {
 
 document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
 
-// --- THE CRITICAL FIX FOR YOUR PERCENTAGES ---
+// 4. Position Logic
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) {
@@ -49,7 +52,7 @@ function updateCameraPosition() {
   const slot = currentSlots[shotIndex];
   
   camera.style.opacity = "1";
-  // Forced property updates to ensure browser follows your % exactly
+  // Force percentages
   camera.style.setProperty('left', slot.x + "%", 'important');
   camera.style.setProperty('top', slot.y + "%", 'important');
   camera.style.setProperty('width', slot.w + "%", 'important');
@@ -68,11 +71,10 @@ function loadFrame() {
 document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 
-// Capture Logic
+// 5. Capture & Download (Standard Logic)
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
-  if (shotIndex >= currentSlots.length) return alert("Frame full!");
-
+  if (shotIndex >= currentSlots.length) return;
   let count = 3;
   countdownEl.textContent = count;
   const timer = setInterval(() => {
@@ -85,26 +87,40 @@ document.getElementById("captureBtn").onclick = () => {
       const ctx = canvas.getContext("2d");
       ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
       ctx.drawImage(camera, 0, 0);
-      
       const photoData = canvas.toDataURL("image/png");
       capturedImages.push(photoData);
-
       const slot = currentSlots[shotIndex];
       const img = document.createElement("img");
       img.src = photoData; img.className = "captured-slot-photo";
-      
-      // Forces the captured photo to match your measured percentages
       img.style.setProperty('left', slot.x + "%", 'important');
       img.style.setProperty('top', slot.y + "%", 'important');
       img.style.setProperty('width', slot.w + "%", 'important');
       img.style.setProperty('height', slot.h + "%", 'important');
-      
       photoPreviewContainer.appendChild(img);
-
       shotIndex++;
       updateCameraPosition();
     } else { countdownEl.textContent = count; }
   }, 1000);
 };
 
-// Download logic (omitted for brevity, keep your previous one)
+// --- 6. DEBUG COORDINATE FINDER ---
+// Press Arrow Keys to move. Press W/S for Height, A/D for Width.
+window.addEventListener('keydown', (e) => {
+  const currentSlots = frames[frameIndex].slots;
+  const slot = currentSlots[shotIndex] || currentSlots[0];
+  const step = 0.2; // High precision movement
+
+  if (e.key === "ArrowUp")    slot.y -= step;
+  if (e.key === "ArrowDown")  slot.y += step;
+  if (e.key === "ArrowLeft")  slot.x -= step;
+  if (e.key === "ArrowRight") slot.x += step;
+  if (e.key.toLowerCase() === "w") slot.h += step;
+  if (e.key.toLowerCase() === "s") slot.h -= step;
+  if (e.key.toLowerCase() === "d") slot.w += step;
+  if (e.key.toLowerCase() === "a") slot.w -= step;
+
+  updateCameraPosition();
+  
+  // LOGS TO CONSOLE: Press F12 to see the numbers
+  console.log(`Frame ${frameIndex + 1}, Slot ${shotIndex + 1}: { x: ${slot.x.toFixed(1)}, y: ${slot.y.toFixed(1)}, w: ${slot.w.toFixed(1)}, h: ${slot.h.toFixed(1)} }`);
+});
