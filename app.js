@@ -2,7 +2,7 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- REPAIRED MUSIC LOGIC ---
+// --- PERSISTENT MUSIC LOGIC ---
 const audio = new Audio("assets/music/song.mp3");
 audio.loop = true;
 
@@ -12,24 +12,18 @@ musicToggle.onclick = () => {
   if (audio.paused) {
     audio.play()
       .then(() => {
-        musicToggle.classList.remove("muted");
+        musicToggle.classList.remove("muted"); // Removes Slash
       })
       .catch(err => {
-        console.error("Audio failed to play. Check if file exists at assets/music/song.mp3");
-        alert("The browser blocked the music or the file wasn't found. Check the file name!");
+        console.error("Playback failed. Please check your folder path.", err);
       });
   } else {
     audio.pause();
-    musicToggle.classList.add("muted");
+    musicToggle.classList.add("muted"); // Adds Slash back
   }
 };
 
-// Check if file is found by browser
-audio.onerror = () => {
-  console.error("CRITICAL: File not found at assets/music/song.mp3");
-};
-
-// --- FRAMES ---
+// --- FRAMES CONFIG ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -39,7 +33,7 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 
-// --- NAVIGATION (No Refresh) ---
+// --- NAVIGATION ---
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -53,6 +47,7 @@ document.getElementById("btnMessage").onclick = () => {
   document.getElementById("messageSection").classList.remove("hidden");
 };
 
+// Back button logic (does NOT refresh page, so music keeps playing)
 document.querySelectorAll(".back-home-btn").forEach(btn => {
   btn.onclick = () => {
     document.getElementById("photoSection").classList.add("hidden");
@@ -110,7 +105,7 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// --- DOWNLOAD (No Stretch) ---
+// --- DOWNLOAD ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
