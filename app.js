@@ -3,6 +3,21 @@ const frameOverlay = document.getElementById("frameOverlay");
 const countdownEl = document.getElementById("countdown");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
+// --- CONTINUOUS MUSIC LOGIC ---
+const audio = new Audio("assets/music/song.mp3");
+audio.loop = true;
+const musicToggle = document.getElementById("musicToggle");
+
+musicToggle.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    musicToggle.classList.remove("muted");
+  } else {
+    audio.pause();
+    musicToggle.classList.add("muted");
+  }
+};
+
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -12,8 +27,8 @@ const frames = [
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
 let msgIndex = 1;
-const totalMessages = 2;
 
+// --- NAVIGATION (No Refresh to keep music playing) ---
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
@@ -27,13 +42,21 @@ document.getElementById("btnMessage").onclick = () => {
   document.getElementById("messageSection").classList.remove("hidden");
 };
 
+document.querySelectorAll(".back-home-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.getElementById("photoSection").classList.add("hidden");
+    document.getElementById("messageSection").classList.add("hidden");
+    document.getElementById("landingPage").classList.remove("hidden");
+    if (camera.srcObject) { camera.srcObject.getTracks().forEach(t => t.stop()); }
+  };
+});
+
 document.getElementById("nextMessage").onclick = () => {
-  msgIndex = (msgIndex % totalMessages) + 1;
+  msgIndex = (msgIndex % 2) + 1;
   document.getElementById("messageImage").src = `assets/messages/birthdaymsg${msgIndex}.png`;
 };
 
-document.querySelectorAll(".back-home-btn").forEach(btn => btn.onclick = () => location.reload());
-
+// --- BOOTH LOGIC ---
 function updateCameraPosition() {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) { camera.style.opacity = "0"; return; }
@@ -81,54 +104,35 @@ document.getElementById("captureBtn").onclick = () => {
   }, 1000);
 };
 
-// DOWNLOAD LOGIC WITH NO STRETCHING
+// --- DOWNLOAD (No Stretch) ---
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
-  
   frameImg.onload = () => {
-    canvas.width = frameImg.naturalWidth;
-    canvas.height = frameImg.naturalHeight;
+    canvas.width = frameImg.naturalWidth; canvas.height = frameImg.naturalHeight;
     let loaded = 0;
-    
     capturedImages.forEach((data, i) => {
       const img = new Image();
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        
         const targetW = (s.w / 100) * canvas.width;
         const targetH = (s.h / 100) * canvas.height;
         const targetX = (s.x / 100) * canvas.width;
         const targetY = (s.y / 100) * canvas.height;
-
-        // Aspect Ratio Calculation (Cover logic)
-        const imgRatio = img.width / img.height;
-        const targetRatio = targetW / targetH;
+        const imgRatio = img.width / img.height, targetRatio = targetW / targetH;
         let sx, sy, sw, sh;
-
-        if (imgRatio > targetRatio) {
-          sh = img.height;
-          sw = img.height * targetRatio;
-          sx = (img.width - sw) / 2;
-          sy = 0;
-        } else {
-          sw = img.width;
-          sh = img.width / targetRatio;
-          sx = 0;
-          sy = (img.height - sh) / 2;
-        }
-
+        if (imgRatio > targetRatio) { sh = img.height; sw = img.height * targetRatio; sx = (img.width - sw) / 2; sy = 0; }
+        else { sw = img.width; sh = img.width / targetRatio; sx = 0; sy = (img.height - sh) / 2; }
         ctx.drawImage(img, sx, sy, sw, sh, targetX, targetY, targetW, targetH);
         loaded++;
-        
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "HappyBirthday_Booth.png";
+          a.download = "HappyBirthdayBooth.png";
           a.href = canvas.toDataURL("image/png", 1.0);
           a.click();
         }
