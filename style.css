@@ -15,25 +15,18 @@ body {
   height: 100vh; gap: 20px;
 }
 
-/* OBLONG BUTTON STYLE */
 .main-nav-btn {
   padding: 15px 40px; 
   border: 3px solid #000;
   background: #fff;
+  border-radius: 100px;
   cursor: pointer;
-  border-radius: 100px; /* Makes it oblong/pill-shaped */
   font-weight: bold;
   font-size: 18px;
   box-shadow: 4px 4px 0px #000;
-  transition: transform 0.1s;
 }
 
-.main-nav-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000;
-}
-
-/* --- MESSAGE SECTION --- */
+/* --- MESSAGE SECTION (ROUNDED) --- */
 #messageSection {
   background-color: #fce4ec;
   height: 100vh; display: flex;
@@ -51,28 +44,26 @@ body {
   border-radius: 25px; object-fit: contain;
 }
 
-/* OBLONG NEXT BUTTON */
 #nextMessage {
-  padding: 12px 30px; 
-  background: #fff;
-  border: 3px solid #000; 
-  border-radius: 100px; /* Pill shape */
-  font-weight: bold; 
-  cursor: pointer;
+  padding: 12px 30px; border: 3px solid #000;
+  border-radius: 100px; background: #fff;
+  font-weight: bold; cursor: pointer;
   box-shadow: 3px 3px 0px #000;
 }
 
 /* --- BOOTH INTERFACE --- */
 .top-bar {
   display: flex; justify-content: center; align-items: center;
-  gap: 15px; padding: 15px; background: #fff; border-bottom: 2px solid #000;
+  position: relative; padding: 15px; background: #fff; border-bottom: 2px solid #000;
 }
 
-/* ROUNDED NAV BUTTONS */
+#resetBtn { position: absolute; left: 20px; }
+
+.frame-nav { display: flex; gap: 15px; }
+
 .pixel-arrow, .pixel-arrow-small {
   background: #fff; border: 2.5px solid #000;
-  border-radius: 50px; /* Round */
-  box-shadow: 2px 2px 0px #000; cursor: pointer;
+  border-radius: 50px; box-shadow: 2px 2px 0px #000; cursor: pointer;
 }
 
 .pixel-arrow { padding: 8px 18px; font-size: 20px; }
@@ -80,16 +71,9 @@ body {
 
 .side-controls { display: flex; gap: 30px; }
 
-/* BIGGER ICONS */
 .icon-btn { 
-  width: 75px; /* Increased from 50px */
-  height: auto;
-  cursor: pointer; 
+  width: 75px; height: auto; cursor: pointer; 
   transition: transform 0.1s;
-}
-
-.icon-btn:hover {
-  transform: scale(1.1);
 }
 
 .booth {
@@ -107,34 +91,26 @@ video {
   object-fit: cover; transform: scaleX(-1);
 }
 
-.captured-slot-photo {
-  position: absolute; object-fit: cover; z-index: 5;
+.captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
+
+#countdown {
+  position: absolute; top: 15px; width: 100%;
+  font-size: 50px; color: white; z-index: 100;
+  text-shadow: 2px 2px 0px #000;
 }
 
-/* --- CLEAN EXIT BUTTON (NO BACKGROUND) --- */
+/* --- SIMPLE X BUTTON --- */
 .back-home-btn {
-  position: absolute; 
-  top: 20px; 
-  right: 25px;
-  background: none; 
-  border: none; 
-  font-size: 32px; /* Bigger X */
-  font-weight: 900; 
-  color: #000;
-  cursor: pointer;
-  z-index: 200;
-  padding: 0;
-}
-
-.back-home-btn:hover {
-  color: #ff4b4b; /* Subtle color change on hover */
+  position: absolute; top: 15px; right: 20px;
+  background: none; border: none; font-size: 32px;
+  font-weight: 900; color: #000; cursor: pointer;
+  padding: 0; line-height: 1;
 }
 
 @media (min-width: 900px) {
   .booth-layout-wrapper { 
       display: flex; flex-direction: row; 
-      justify-content: center; align-items: center; 
-      gap: 50px; padding: 20px; 
+      justify-content: center; align-items: center; gap: 50px;
   }
   .side-controls { flex-direction: column; }
 }
