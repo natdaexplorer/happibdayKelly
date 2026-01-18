@@ -4,25 +4,19 @@ body {
   font-family: 'Georgia', serif;
   background: #F9F7F2;
   text-align: center;
-  overflow-x: hidden;
   color: #8DAA91;
 }
 
 .hidden { display: none !important; }
 
-/* --- MUSIC SYMBOL BUTTON --- */
+/* --- MUSIC TOGGLE --- */
 #musicToggle {
   position: absolute; top: 25px; right: 25px;
-  width: 40px; height: 40px;
-  cursor: pointer;
-  display: flex; justify-content: center; align-items: center;
+  width: 45px; height: 45px;
+  cursor: pointer; display: flex; justify-content: center; align-items: center;
 }
 
-#musicSymbol {
-  font-size: 35px;
-  color: #8DAA91;
-  line-height: 1;
-}
+#musicSymbol { font-size: 38px; color: #8DAA91; line-height: 1; }
 
 .slash {
   position: absolute; width: 3px; height: 100%;
@@ -41,39 +35,53 @@ body {
 }
 
 .main-nav-btn {
-  padding: 15px 40px; 
-  border: 2.5px solid #8DAA91;
+  padding: 15px 40px; border: 2.5px solid #8DAA91;
   background: #fff; border-radius: 100px;
   cursor: pointer; font-weight: bold; font-size: 18px;
   color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91;
 }
 
-/* --- BOOTH & BUTTONS --- */
+/* --- BOOTH TOP BAR (RESTORED SPACING) --- */
 .top-bar {
   display: flex; justify-content: center; align-items: center;
   position: relative; height: 80px;
   background: #fff; border-bottom: 2px solid #8DAA91;
 }
 
-.pixel-arrow { 
-  padding: 4px 12px; font-size: 14px;
+#resetBtn { 
+  position: absolute; left: 20px; 
+  font-size: 24px; width: 45px; height: 45px;
   background: #fff; border: 2.5px solid #8DAA91;
-  color: #8DAA91; border-radius: 50px;
-  cursor: pointer;
+  color: #8DAA91; border-radius: 50px; cursor: pointer;
 }
 
-.icon-btn { width: 75px; height: auto; cursor: pointer; }
-
-.booth-layout-wrapper {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 25px; padding: 20px;
+.top-bar .back-home-btn {
+  position: absolute; right: 20px;
+  background: none; border: none; font-size: 32px;
+  color: #8DAA91; cursor: pointer;
 }
 
-.booth {
-  position: relative; width: 90vw; max-width: 400px;
-  margin: 0 auto; line-height: 0; border: none;
+.frame-nav { display: flex; gap: 15px; }
+
+.pixel-arrow { 
+  padding: 6px 15px; font-size: 16px;
+  background: #fff; border: 2.5px solid #8DAA91;
+  color: #8DAA91; border-radius: 50px; cursor: pointer;
 }
 
-#frameOverlay { position: relative; width: 100%; height: auto; z-index: 10; pointer-events: none; }
+/* --- BOOTH --- */
+.booth-layout-wrapper { display: flex; flex-direction: column; align-items: center; gap: 25px; padding: 20px; }
+.booth { position: relative; width: 90vw; max-width: 400px; margin: 0 auto; line-height: 0; }
+#frameOverlay { position: relative; width: 100%; z-index: 10; pointer-events: none; }
 video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1); }
 .captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
+.icon-btn { width: 75px; cursor: pointer; }
+.side-controls { display: flex; gap: 50px; justify-content: center; }
+
+/* --- MESSAGE --- */
+.message-container {
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; gap: 20px; background: #fff;
+  padding: 55px 20px 25px 20px; border-radius: 40px;
+  border: 3.5px solid #8DAA91; width: 92vw; max-width: 500px;
+}
