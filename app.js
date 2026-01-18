@@ -1,3 +1,34 @@
+// --- BUTTON NAVIGATION LOGIC ---
+
+// 1. "Take Photos" Button
+document.getElementById("btnStartBooth").onclick = async () => {
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("photoSection").classList.remove("hidden");
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
+    });
+    camera.srcObject = stream;
+    loadFrame();
+  } catch (err) {
+    alert("Camera access denied. Please check browser permissions.");
+  }
+};
+
+// 2. "Birthday Message" Button
+document.getElementById("btnMessage").onclick = () => {
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("messageSection").classList.remove("hidden");
+};
+
+// 3. "X" (Back) Buttons
+document.querySelectorAll(".back-home-btn").forEach(btn => {
+  btn.onclick = () => {
+    // This refreshes the page to go back to the main menu
+    location.reload(); 
+  };
+});
+
 // 1. Setup Elements
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
