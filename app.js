@@ -2,31 +2,30 @@ const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
-// --- MUSIC LOGIC ---
-// Using "./" tells GitHub to look in the CURRENT folder first.
-const audio = new Audio("./assets/music/song.mp3");
+// --- MUSIC LOGIC (Updated Path to match your double assets folder) ---
+const audio = new Audio("assets/assets/music/song.mp3");
 audio.loop = true;
 
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    // 1. Visually change the button immediately so it's not "stuck"
-    musicToggle.classList.remove("muted");
-    
-    // 2. Try to play
-    audio.play().catch(err => {
-      console.error("Audio error:", err);
-      // If it fails, put the slash back
-      musicToggle.classList.add("muted");
+    // 1. Try to play the music
+    audio.play().then(() => {
+      // 2. If successful, remove the red slash visually
+      musicToggle.classList.remove("muted");
+    }).catch(err => {
+      console.error("Playback failed. Path might still be wrong:", err);
+      alert("Error: Browser blocked music or file not found at assets/assets/music/song.mp3");
     });
   } else {
+    // 3. If playing, pause and show the red slash
     audio.pause();
     musicToggle.classList.add("muted");
   }
 };
 
-// --- REST OF YOUR CODE (NO CHANGES TO BOOTH LOGIC) ---
+// --- BOOTH NAVIGATION ---
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
