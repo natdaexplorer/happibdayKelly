@@ -3,23 +3,20 @@ const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
 // --- MUSIC LOGIC ---
-const audio = new Audio();
+// Matches your successful 15.5MB upload path
+const audio = new Audio("assets/assets/song.mp3"); 
 audio.loop = true;
-
-// This is the path that generated the player for you
-audio.src = "assets/assets/music/song.mp3"; 
 
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
-    // 1. Visually show it's trying to play
+    // Visually show it is active immediately
     musicToggle.classList.remove("muted");
     
     audio.play().catch(err => {
-      console.error("Playback failed. If the file is 0KB or 2 bytes, it won't play.", err);
+      console.error("Playback failed. Site may not be fully deployed yet.", err);
       musicToggle.classList.add("muted");
-      alert("Error: The song file appears to be empty or corrupted. Please re-upload your MP3 to GitHub!");
     });
   } else {
     audio.pause();
@@ -28,7 +25,6 @@ musicToggle.onclick = () => {
 };
 
 // --- BOOTH NAVIGATION ---
-// Updated paths to match your screenshot: assets/frames/
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -44,9 +40,7 @@ document.getElementById("btnStartBooth").onclick = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     camera.srcObject = stream;
-  } catch (err) {
-    alert("Camera not found or permission denied.");
-  }
+  } catch (e) { alert("Camera access denied."); }
   loadFrame();
 };
 
@@ -94,7 +88,6 @@ document.getElementById("captureBtn").onclick = () => {
   ctx.drawImage(camera, 0, 0);
   const photoData = canvas.toDataURL("image/png");
   capturedImages.push(photoData);
-
   const slot = currentSlots[shotIndex];
   const img = document.createElement("img");
   img.src = photoData; img.className = "captured-slot-photo";
@@ -123,7 +116,7 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "KellyBirthday.png"; a.href = canvas.toDataURL("image/png"); a.click();
+          a.download = "HappyBirthdayBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
