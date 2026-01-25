@@ -1,6 +1,7 @@
 const camera = document.getElementById("camera");
 const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
+const countdownDisplay = document.getElementById("countdown");
 
 // --- MUSIC LOGIC ---
 const audio = new Audio("assets/song.mp3"); 
@@ -10,7 +11,7 @@ const musicToggle = document.getElementById("musicToggle");
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(err => console.log("Vercel update pending..."));
+    audio.play().catch(() => console.log("Waiting for Vercel deployment..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
@@ -45,7 +46,8 @@ document.getElementById("btnStartBooth").onclick = async () => {
 
 function loadFrame() {
   frameOverlay.src = frames[frameIndex].src;
-  shotIndex = 0; capturedImages = [];
+  shotIndex = 0; 
+  capturedImages = [];
   photoPreviewContainer.innerHTML = ""; 
   updateCameraPosition();
 }
@@ -63,16 +65,35 @@ document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
 
+  let count = 3;
+  countdownDisplay.classList.remove("hidden");
+  countdownDisplay.innerText = count;
+
+  const timer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownDisplay.innerText = count;
+    } else {
+      clearInterval(timer);
+      countdownDisplay.classList.add("hidden");
+      takePhoto();
+    }
+  }, 1000);
+};
+
+function takePhoto() {
   const canvas = document.createElement("canvas");
-  canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
+  canvas.width = camera.videoWidth; 
+  canvas.height = camera.videoHeight;
   const ctx = canvas.getContext("2d");
-  ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+  ctx.translate(canvas.width, 0); 
+  ctx.scale(-1, 1);
   ctx.drawImage(camera, 0, 0);
   
   const photoData = canvas.toDataURL("image/png");
   capturedImages.push(photoData);
 
-  const slot = currentSlots[shotIndex];
+  const slot = frames[frameIndex].slots[shotIndex];
   const img = document.createElement("img");
   img.src = photoData;
   img.className = "captured-slot-photo";
@@ -82,6 +103,24 @@ document.getElementById("captureBtn").onclick = () => {
   photoPreviewContainer.appendChild(img);
   shotIndex++; 
   updateCameraPosition();
-};
+}
 
-// ... (Rest of navigation and download logic remains the same)
+// Navigation Controls
+document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
+document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
+document.getElementById("resetBtn").onclick = () => loadFrame();
+
+// Home Buttons
+document.querySelectorAll(".back-home-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.getElementById("photoSection").classList.add("hidden");
+    document.getElementById("messageSection").classList.add("hidden");
+    document.getElementById("landingPage").classList.remove("hidden");
+    if (camera.srcObject) { camera.srcObject.getTracks().forEach(t => t.stop()); }
+  };
+});
+
+document.getElementById("btnMessage").onclick = () => {
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("messageSection").classList.remove("hidden");
+};
