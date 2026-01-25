@@ -22,19 +22,21 @@
     <button class="back-home-btn top-right">✕</button> 
     <div class="message-card">
       <img id="messageImage" src="assets/messages/birthdaymsg1.png" alt="Message" />
-      <button id="nextMessage" class="nav-arrow">Next ➔</button>
+      <div style="margin-top: 15px;">
+        <button id="nextMessage" class="main-nav-btn" style="padding: 10px 20px; font-size: 14px;">Next ➔</button>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="photoSection" class="hidden">
   <div class="top-bar">
-    <button id="resetBtn">⟲</button>
+    <button id="resetBtn" class="main-nav-btn" style="padding: 5px 15px; position: absolute; left: 15px;">⟲</button>
     <div class="frame-nav">
-      <button id="prevFrame" class="pixel-arrow">◀</button>
-      <button id="nextFrame" class="pixel-arrow">▶</button>
+      <button id="prevFrame" class="main-nav-btn" style="padding: 5px 15px;">◀</button>
+      <button id="nextFrame" class="main-nav-btn" style="padding: 5px 15px;">▶</button>
     </div>
-    <button class="back-home-btn">✕</button>
+    <button class="back-home-btn top-right">✕</button>
   </div>
   <div class="booth-layout-wrapper">
     <div class="booth">
@@ -48,7 +50,6 @@
     </div>
   </div>
 </section>
-  
 
 <script src="app.js"></script>
 </body>
