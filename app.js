@@ -11,7 +11,7 @@ const musicToggle = document.getElementById("musicToggle");
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(() => console.log("Waiting for Vercel deployment..."));
+    audio.play().catch(() => console.log("Waiting for deployment..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
@@ -64,20 +64,13 @@ function updateCameraPosition() {
 document.getElementById("captureBtn").onclick = () => {
   const currentSlots = frames[frameIndex].slots;
   if (shotIndex >= currentSlots.length) return;
-
   let count = 3;
   countdownDisplay.classList.remove("hidden");
   countdownDisplay.innerText = count;
-
   const timer = setInterval(() => {
     count--;
-    if (count > 0) {
-      countdownDisplay.innerText = count;
-    } else {
-      clearInterval(timer);
-      countdownDisplay.classList.add("hidden");
-      takePhoto();
-    }
+    if (count > 0) countdownDisplay.innerText = count;
+    else { clearInterval(timer); countdownDisplay.classList.add("hidden"); takePhoto(); }
   }, 1000);
 };
 
@@ -86,37 +79,59 @@ function takePhoto() {
   canvas.width = camera.videoWidth; 
   canvas.height = camera.videoHeight;
   const ctx = canvas.getContext("2d");
-  ctx.translate(canvas.width, 0); 
-  ctx.scale(-1, 1);
+  ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
   ctx.drawImage(camera, 0, 0);
-  
   const photoData = canvas.toDataURL("image/png");
   capturedImages.push(photoData);
-
   const slot = frames[frameIndex].slots[shotIndex];
   const img = document.createElement("img");
-  img.src = photoData;
-  img.className = "captured-slot-photo";
+  img.src = photoData; img.className = "captured-slot-photo";
   img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
   img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
-  
   photoPreviewContainer.appendChild(img);
   shotIndex++; 
   updateCameraPosition();
 }
 
-// Navigation Controls
+document.getElementById("downloadBtn").onclick = () => {
+  if (capturedImages.length === 0) return;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const frameImg = new Image();
+  frameImg.src = frames[frameIndex].src;
+  frameImg.crossOrigin = "anonymous";
+  frameImg.onload = () => {
+    canvas.width = frameImg.naturalWidth; canvas.height = frameImg.naturalHeight;
+    let loaded = 0;
+    capturedImages.forEach((data, i) => {
+      const img = new Image();
+      img.src = data;
+      img.onload = () => {
+        const s = frames[frameIndex].slots[i];
+        ctx.drawImage(img, 0, 0, img.width, img.height, (s.x/100)*canvas.width, (s.y/100)*canvas.height, (s.w/100)*canvas.width, (s.h/100)*canvas.height);
+        loaded++;
+        if (loaded === capturedImages.length) {
+          ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+          const link = document.createElement("a");
+          link.download = "KellyBirthdayBooth.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        }
+      };
+    });
+  };
+};
+
 document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
 
-// Home Buttons
 document.querySelectorAll(".back-home-btn").forEach(btn => {
   btn.onclick = () => {
     document.getElementById("photoSection").classList.add("hidden");
     document.getElementById("messageSection").classList.add("hidden");
     document.getElementById("landingPage").classList.remove("hidden");
-    if (camera.srcObject) { camera.srcObject.getTracks().forEach(t => t.stop()); }
+    if (camera.srcObject) camera.srcObject.getTracks().forEach(t => t.stop());
   };
 });
 
