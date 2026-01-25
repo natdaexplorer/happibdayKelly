@@ -11,7 +11,7 @@ const musicToggle = document.getElementById("musicToggle");
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(() => console.log("Site update pending..."));
+    audio.play().catch(() => console.log("Deployment in progress..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
