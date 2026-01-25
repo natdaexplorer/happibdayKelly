@@ -3,7 +3,8 @@ const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
 // --- MUSIC LOGIC ---
-const audio = new Audio("assets/assets/song.mp3"); 
+// Points to the 15.5MB file in your main assets folder
+const audio = new Audio("assets/song.mp3"); 
 audio.loop = true;
 
 const musicToggle = document.getElementById("musicToggle");
@@ -12,7 +13,7 @@ musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
     audio.play().catch(err => {
-      console.error("Vercel deployment still pending.");
+      console.error("Playback failed. Site might still be deploying.", err);
       musicToggle.classList.add("muted");
     });
   } else {
@@ -21,7 +22,8 @@ musicToggle.onclick = () => {
   }
 };
 
-// --- NAVIGATION & BOOTH ---
+// --- BOOTH NAVIGATION ---
+// Updated to use your primary 'assets/frames/' and 'assets/messages/' folders
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -113,10 +115,9 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "HappyBirthdayBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
+          a.download = "KellyBirthday.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
   };
 };
-
