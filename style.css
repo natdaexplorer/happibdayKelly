@@ -57,3 +57,4 @@ video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1)
 .icon-btn { width: 60px; cursor: pointer; opacity: 0.8; }
 .icon-btn:hover { opacity: 1; }
 .captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
+
