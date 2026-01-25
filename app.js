@@ -103,7 +103,25 @@ document.getElementById("downloadBtn").onclick = () => {
       img.src = data;
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
-        ctx.drawImage(img, 0, 0, img.width, img.height, (s.x/100)*canvas.width, (s.y/100)*canvas.height, (s.w/100)*canvas.width, (s.h/100)*canvas.height);
+        const targetW = (s.w / 100) * canvas.width;
+        const targetH = (s.h / 100) * canvas.height;
+        const targetX = (s.x / 100) * canvas.width;
+        const targetY = (s.y / 100) * canvas.height;
+
+        // Calculate aspect ratio to avoid stretching
+        const imgRatio = img.width / img.height;
+        const targetRatio = targetW / targetH;
+        let sw, sh, sx, sy;
+
+        if (imgRatio > targetRatio) {
+          sh = img.height; sw = sh * targetRatio;
+          sx = (img.width - sw) / 2; sy = 0;
+        } else {
+          sw = img.width; sh = sw / targetRatio;
+          sx = 0; sy = (img.height - sh) / 2;
+        }
+
+        ctx.drawImage(img, sx, sy, sw, sh, targetX, targetY, targetW, targetH);
         if (++loaded === capturedImages.length) {
           ctx.drawImage(fImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
