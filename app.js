@@ -3,27 +3,31 @@ const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 
 // --- MUSIC LOGIC ---
-// Points to the 15.5MB file in your main assets folder
 const audio = new Audio("assets/song.mp3"); 
 audio.loop = true;
-
 const musicToggle = document.getElementById("musicToggle");
 
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(err => {
-      console.error("Playback failed. Site might still be deploying.", err);
-      musicToggle.classList.add("muted");
-    });
+    audio.play().catch(err => console.log("Waiting for Vercel update..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
   }
 };
 
+// --- BIRTHDAY MESSAGE LOGIC ---
+const messages = ["assets/messages/birthdaymsg1.png", "assets/messages/birthdaymsg2.png"];
+let msgIndex = 0;
+const messageImage = document.getElementById("messageImage");
+
+document.getElementById("nextMessage").onclick = () => {
+  msgIndex = (msgIndex + 1) % messages.length;
+  messageImage.src = messages[msgIndex];
+};
+
 // --- BOOTH NAVIGATION ---
-// Updated to use your primary 'assets/frames/' and 'assets/messages/' folders
 const frames = [
   { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
   { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
@@ -36,10 +40,8 @@ let frameIndex = 0, shotIndex = 0, capturedImages = [];
 document.getElementById("btnStartBooth").onclick = async () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("photoSection").classList.remove("hidden");
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    camera.srcObject = stream;
-  } catch (e) { alert("Camera access denied."); }
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  camera.srcObject = stream;
   loadFrame();
 };
 
@@ -115,7 +117,7 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const a = document.createElement("a");
-          a.download = "KellyBirthday.png"; a.href = canvas.toDataURL("image/png"); a.click();
+          a.download = "KellyBday.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
