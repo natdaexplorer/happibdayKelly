@@ -3,7 +3,7 @@ const frameOverlay = document.getElementById("frameOverlay");
 const photoPreviewContainer = document.getElementById("photoPreviewContainer");
 const countdownDisplay = document.getElementById("countdown");
 
-// --- MUSIC LOGIC ---
+// --- MUSIC ---
 const audio = new Audio("assets/song.mp3"); 
 audio.loop = true;
 const musicToggle = document.getElementById("musicToggle");
@@ -11,14 +11,14 @@ const musicToggle = document.getElementById("musicToggle");
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(() => console.log("Deployment pending..."));
+    audio.play().catch(() => console.log("Site update pending..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
   }
 };
 
-// --- MESSAGE NAVIGATION ---
+// --- MESSAGES ---
 const messages = ["assets/messages/birthdaymsg1.png", "assets/messages/birthdaymsg2.png"];
 let msgIndex = 0;
 document.getElementById("nextMessage").onclick = () => {
@@ -26,12 +26,12 @@ document.getElementById("nextMessage").onclick = () => {
   document.getElementById("messageImage").src = messages[msgIndex];
 };
 
-// --- BOOTH LOGIC ---
+// --- BOOTH ---
 const frames = [
-  { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85.0, h: 32.6 }, { x: 10.0, y: 34.3, w: 85.0, h: 32.6 }, { x: 10.0, y: 66.2, w: 85.0, h: 32.6 }] },
-  { src: "assets/frames/frame2.png", slots: [{ x: 13.0, y: 8.0, w: 82.7, h: 42.0 }, { x: 13.0, y: 51.0, w: 82.7, h: 42.0 }] },
-  { src: "assets/frames/frame3.png", slots: [{ x: 8.5, y: 34.0, w: 46.2, h: 30.0 }] },
-  { src: "assets/frames/frame4.png", slots: [{ x: 11.0, y: 33.0, w: 33.0, h: 25.0 }, { x: 56.0, y: 33.0, w: 33.0, h: 25.0 }] }
+  { src: "assets/frames/frame1.png", slots: [{ x: 9.5, y: 1.5, w: 85, h: 32.6 }, { x: 10, y: 34.3, w: 85, h: 32.6 }, { x: 10, y: 66.2, w: 85, h: 32.6 }] },
+  { src: "assets/frames/frame2.png", slots: [{ x: 13, y: 8, w: 82.7, h: 42 }, { x: 13, y: 51, w: 82.7, h: 42 }] },
+  { src: "assets/frames/frame3.png", slots: [{ x: 8.5, y: 34, w: 46.2, h: 30 }] },
+  { src: "assets/frames/frame4.png", slots: [{ x: 11, y: 33, w: 33, h: 25 }, { x: 56, y: 33, w: 33, h: 25 }] }
 ];
 
 let frameIndex = 0, shotIndex = 0, capturedImages = [];
@@ -46,8 +46,7 @@ document.getElementById("btnStartBooth").onclick = async () => {
 
 function loadFrame() {
   frameOverlay.src = frames[frameIndex].src;
-  shotIndex = 0; 
-  capturedImages = [];
+  shotIndex = 0; capturedImages = [];
   photoPreviewContainer.innerHTML = ""; 
   updateCameraPosition();
 }
@@ -62,8 +61,7 @@ function updateCameraPosition() {
 }
 
 document.getElementById("captureBtn").onclick = () => {
-  const currentSlots = frames[frameIndex].slots;
-  if (shotIndex >= currentSlots.length) return;
+  if (shotIndex >= frames[frameIndex].slots.length) return;
   let count = 3;
   countdownDisplay.classList.remove("hidden");
   countdownDisplay.innerText = count;
@@ -76,8 +74,7 @@ document.getElementById("captureBtn").onclick = () => {
 
 function takePhoto() {
   const canvas = document.createElement("canvas");
-  canvas.width = camera.videoWidth; 
-  canvas.height = camera.videoHeight;
+  canvas.width = camera.videoWidth; canvas.height = camera.videoHeight;
   const ctx = canvas.getContext("2d");
   ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
   ctx.drawImage(camera, 0, 0);
@@ -89,18 +86,17 @@ function takePhoto() {
   img.style.left = slot.x + "%"; img.style.top = slot.y + "%";
   img.style.width = slot.w + "%"; img.style.height = slot.h + "%";
   photoPreviewContainer.appendChild(img);
-  shotIndex++; 
-  updateCameraPosition();
+  shotIndex++; updateCameraPosition();
 }
 
 document.getElementById("downloadBtn").onclick = () => {
   if (capturedImages.length === 0) return;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const frameImg = new Image();
-  frameImg.src = frames[frameIndex].src;
-  frameImg.onload = () => {
-    canvas.width = frameImg.naturalWidth; canvas.height = frameImg.naturalHeight;
+  const fImg = new Image();
+  fImg.src = frames[frameIndex].src;
+  fImg.onload = () => {
+    canvas.width = fImg.naturalWidth; canvas.height = fImg.naturalHeight;
     let loaded = 0;
     capturedImages.forEach((data, i) => {
       const img = new Image();
@@ -108,13 +104,10 @@ document.getElementById("downloadBtn").onclick = () => {
       img.onload = () => {
         const s = frames[frameIndex].slots[i];
         ctx.drawImage(img, 0, 0, img.width, img.height, (s.x/100)*canvas.width, (s.y/100)*canvas.height, (s.w/100)*canvas.width, (s.h/100)*canvas.height);
-        loaded++;
-        if (loaded === capturedImages.length) {
-          ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-          const link = document.createElement("a");
-          link.download = "HappyBirthdayBooth.png";
-          link.href = canvas.toDataURL("image/png");
-          link.click();
+        if (++loaded === capturedImages.length) {
+          ctx.drawImage(fImg, 0, 0, canvas.width, canvas.height);
+          const a = document.createElement("a");
+          a.download = "PhotoBooth.png"; a.href = canvas.toDataURL("image/png"); a.click();
         }
       };
     });
@@ -124,7 +117,6 @@ document.getElementById("downloadBtn").onclick = () => {
 document.getElementById("prevFrame").onclick = () => { frameIndex = (frameIndex - 1 + frames.length) % frames.length; loadFrame(); };
 document.getElementById("nextFrame").onclick = () => { frameIndex = (frameIndex + 1) % frames.length; loadFrame(); };
 document.getElementById("resetBtn").onclick = () => loadFrame();
-
 document.querySelectorAll(".back-home-btn").forEach(btn => {
   btn.onclick = () => {
     document.getElementById("photoSection").classList.add("hidden");
@@ -133,7 +125,6 @@ document.querySelectorAll(".back-home-btn").forEach(btn => {
     if (camera.srcObject) camera.srcObject.getTracks().forEach(t => t.stop());
   };
 });
-
 document.getElementById("btnMessage").onclick = () => {
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("messageSection").classList.remove("hidden");
