@@ -11,7 +11,7 @@ const musicToggle = document.getElementById("musicToggle");
 musicToggle.onclick = () => {
   if (audio.paused) {
     musicToggle.classList.remove("muted");
-    audio.play().catch(() => console.log("Waiting for deployment..."));
+    audio.play().catch(() => console.log("Deployment pending..."));
   } else {
     audio.pause();
     musicToggle.classList.add("muted");
@@ -99,7 +99,6 @@ document.getElementById("downloadBtn").onclick = () => {
   const ctx = canvas.getContext("2d");
   const frameImg = new Image();
   frameImg.src = frames[frameIndex].src;
-  frameImg.crossOrigin = "anonymous";
   frameImg.onload = () => {
     canvas.width = frameImg.naturalWidth; canvas.height = frameImg.naturalHeight;
     let loaded = 0;
@@ -113,7 +112,7 @@ document.getElementById("downloadBtn").onclick = () => {
         if (loaded === capturedImages.length) {
           ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
           const link = document.createElement("a");
-          link.download = "KellyBirthdayBooth.png";
+          link.download = "HappyBirthdayBooth.png";
           link.href = canvas.toDataURL("image/png");
           link.click();
         }
