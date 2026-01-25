@@ -12,15 +12,15 @@ body { margin: 0; padding: 0; font-family: 'Georgia', serif; background: #F9F7F2
 .small-btn { padding: 6px 15px; font-size: 11px; box-shadow: 2px 2px 0px #8DAA91; }
 .next-msg-btn { padding: 8px 20px; font-size: 14px; margin-top: 15px; }
 
-/* MESSAGE POPUP - FIXED SPACING */
+/* MESSAGE POPUP - ADJUSTED EXIT POS */
 .message-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(249, 247, 242, 0.95); z-index: 1000; }
 .message-card { position: relative; width: 90%; max-width: 400px; background: white; padding: 50px 10px 20px; border: 2.5px solid #8DAA91; border-radius: 20px; }
-.exit-pos { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); background: none; border: none; font-size: 32px; color: #8DAA91; cursor: pointer; }
+.exit-pos { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: none; border: none; font-size: 32px; color: #8DAA91; cursor: pointer; }
 #messageImage { width: 100%; height: auto; border-radius: 10px; }
 
 /* BOOTH UI */
 .top-bar { display: flex; justify-content: center; align-items: center; position: relative; height: 70px; background: #fff; border-bottom: 2px solid #8DAA91; margin-bottom: 10px; }
-.circle-btn { background: white; border: 2px solid #8DAA91; border-radius: 50%; width: 35px; height: 35px; color: #8DAA91; cursor: pointer; box-shadow: 2px 2px 0px #8DAA91; display: flex; align-items: center; justify-content: center; }
+.circle-btn { background: white; border: 2px solid #8DAA91; border-radius: 50%; width: 35px; height: 35px; color: #8DAA91; cursor: pointer; box-shadow: 2px 2px 0px #8DAA91; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 .reset-pos { position: absolute; left: 15px; }
 .exit-photo-pos { position: absolute; right: 15px; }
 .booth { position: relative; width: 85vw; max-width: 360px; margin: 0 auto; line-height: 0; overflow: hidden; }
