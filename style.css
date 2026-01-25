@@ -1,34 +1,31 @@
 body { margin: 0; padding: 0; font-family: 'Georgia', serif; background: #F9F7F2; text-align: center; color: #8DAA91; overflow: hidden; }
 .hidden { display: none !important; }
 
-/* MUSIC BUTTON SLASH FIX */
-#musicToggle { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
+/* MUSIC */
+#musicToggle { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; }
 #musicSymbol { font-size: 35px; color: #8DAA91; position: relative; }
 #musicToggle .slash { position: absolute; width: 3px; height: 35px; background: #ff6b6b; transform: rotate(45deg); display: none; }
 #musicToggle.muted .slash { display: block; }
 
-/* COTTAGE GREEN BUTTONS */
-.main-nav-btn { padding: 15px 40px; border: 2.5px solid #8DAA91; background: #fff; border-radius: 100px; cursor: pointer; font-weight: bold; color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91; transition: 0.1s; }
-.small-text-btn { padding: 6px 15px; font-size: 11px; box-shadow: 2px 2px 0px #8DAA91; }
-
-/* UNIFIED TOP BUTTONS (RESET & EXIT) */
-.top-btn-style { background: white; border: 2px solid #8DAA91; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; color: #8DAA91; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 0px #8DAA91; }
+/* BUTTONS */
+.main-nav-btn { padding: 15px 40px; border: 2.5px solid #8DAA91; background: #fff; border-radius: 100px; cursor: pointer; font-weight: bold; color: #8DAA91; box-shadow: 3px 3px 0px #8DAA91; }
+.small-btn { padding: 6px 15px; font-size: 11px; box-shadow: 2px 2px 0px #8DAA91; }
+.next-msg-btn { padding: 8px 20px; font-size: 14px; margin-top: 15px; }
 
 /* MESSAGE POPUP */
 .message-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(249, 247, 242, 0.95); z-index: 1000; }
-.message-card { position: relative; width: 85%; max-width: 380px; height: auto; min-height: 480px; /* Slightly longer */ background: white; padding: 50px 20px 20px; border: 2.5px solid #8DAA91; border-radius: 20px; }
-.exit-pos { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); }
-#messageImage { width: 100%; height: auto; max-height: 350px; border-radius: 10px; object-fit: contain; }
-.button-row { margin-top: 20px; display: flex; justify-content: center; }
+.message-card { position: relative; width: 90%; max-width: 400px; background: white; padding: 40px 10px 20px; border: 2.5px solid #8DAA91; border-radius: 20px; }
+.transparent-exit { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: none; border: none; font-size: 30px; color: #8DAA91; cursor: pointer; }
+#messageImage { width: 100%; height: auto; border-radius: 10px; }
 
 /* BOOTH UI */
-.top-bar { display: flex; justify-content: center; align-items: center; position: relative; height: 70px; background: #fff; border-bottom: 2px solid #8DAA91; margin-bottom: 20px; }
+.top-bar { display: flex; justify-content: center; align-items: center; position: relative; height: 70px; background: #fff; border-bottom: 2px solid #8DAA91; margin-bottom: 10px; }
+.circle-btn { background: white; border: 2px solid #8DAA91; border-radius: 50%; width: 35px; height: 35px; color: #8DAA91; cursor: pointer; box-shadow: 2px 2px 0px #8DAA91; display: flex; align-items: center; justify-content: center; }
 .reset-pos { position: absolute; left: 15px; }
 .exit-photo-pos { position: absolute; right: 15px; }
 .booth { position: relative; width: 85vw; max-width: 360px; margin: 0 auto; line-height: 0; overflow: hidden; }
 #frameOverlay { position: relative; width: 100%; z-index: 10; pointer-events: none; }
 video { position: absolute; z-index: 1; object-fit: cover; transform: scaleX(-1); top: 0; left: 0; width: 100%; height: 100%; }
-#photoPreviewContainer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 .captured-slot-photo { position: absolute; object-fit: cover; z-index: 5; }
 #countdown { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 100; font-weight: bold; }
 .side-controls { display: flex; gap: 40px; justify-content: center; margin-top: 25px; }
